@@ -1,0 +1,103 @@
+version: 2
+jobs:
+  android:
+    working_directory: ~/tia-client-react-native
+    docker:
+      - image: circleci/android:api-28-node8-alpha
+    steps:
+      - checkout:
+          path: ~/tia-client-react-native
+      - attach_workspace:
+          at: ~/tia-client-react-native
+
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+      - run: yarn install
+      - run: npx jetify
+      - run:
+          name: Setup environment file
+          command: |
+            touch ${HOME}/tia-client-react-native/.env
+            echo "API_BASE_URL=$API_BASE_URL" >> ${HOME}/tia-client-react-native/.env
+            echo "FIREBASE_CONFIG_API_KEY=$FIREBASE_CONFIG_API_KEY" >> ${HOME}/tia-client-react-native/.env
+            echo "FIREBASE_CONFIG_AUTH_DOMAIN=$FIREBASE_CONFIG_AUTH_DOMAIN" >> ${HOME}/tia-client-react-native/.env
+            echo "FIREBASE_CONFIG_DATABASE_URL=$FIREBASE_CONFIG_DATABASE_URL" >> ${HOME}/tia-client-react-native/.env
+            echo "FIREBASE_CONFIG_PROJECT_ID=$FIREBASE_CONFIG_PROJECT_ID" >> ${HOME}/tia-client-react-native/.env
+            echo "FIREBASE_CONFIG_STORAGE_BUCKET=$FIREBASE_CONFIG_STORAGE_BUCKET" >> ${HOME}/tia-client-react-native/.env
+            echo "FIREBASE_CONFIG_MESSAGING_SENDER_ID=$FIREBASE_CONFIG_MESSAGING_SENDER_ID" >> ${HOME}/tia-client-react-native/.env
+            echo "FB_APP_ID=$FB_APP_ID" >> ${HOME}/tia-client-react-native/.env
+            echo "GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID" >> ${HOME}/tia-client-react-native/.env
+            echo "GOOGLE_PLACES_API_KEY=$GOOGLE_PLACES_API_KEY" >> ${HOME}/tia-client-react-native/.env
+            echo "GOOGLE_GEOCODING_API_KEY=$GOOGLE_GEOCODING_API_KEY" >> ${HOME}/tia-client-react-native/.env
+
+      # - run:
+      #     name: Generate android bundle
+      #     command: yarn bundle-android
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - restore_cache:
+          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
+
+      - save_cache:
+          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: Setup keystore properties
+          command: |
+            touch ${HOME}/tia-client-react-native/android/release.keystore.properties
+            echo "TIA_UPLOAD_STORE_FILE=$TIA_UPLOAD_STORE_FILE" >> ${HOME}/tia-client-react-native/android/release.keystore.properties
+            echo "TIA_UPLOAD_KEY_ALIAS=$TIA_UPLOAD_KEY_ALIAS" >> ${HOME}/tia-client-react-native/android/release.keystore.properties
+            echo "TIA_UPLOAD_STORE_PASSWORD=$TIA_UPLOAD_STORE_PASSWORD" >> ${HOME}/tia-client-react-native/android/release.keystore.properties
+            echo "TIA_UPLOAD_KEY_PASSWORD=$TIA_UPLOAD_KEY_PASSWORD" >> ${HOME}/tia-client-react-native/android/release.keystore.properties
+
+      - run:
+          name: Setup keystore
+          command: |
+            echo $KEYSTORE | base64 -d  > ${HOME}/tia-client-react-native/android/app/tiarelease.keystore
+      - run:
+          name: Build release APK
+          command: |
+            cd android
+            ./gradlew assembleRelease
+      - run:
+          name: Build bundle (.aab file)
+          command: |
+            cd android
+            ./gradlew bundleRelease
+      - store_test_results:
+          path: android/app/build/outputs/apk/
+          destination: apks/
+      - store_test_results:
+          path: android/app/build/outputs/bundle/
+          destination: bundles/
+
+      - run:
+          name: Upload to Slack
+          command: |
+            export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+            curl -F file=@android/app/build/outputs/apk/release/app-release.apk -F channels=$SLACK_CHANNEL -F token=$SLACK_API_TOKEN -F title="Here is new TIA relase build apk file"  https://slack.com/api/files.upload
+      - run:
+          name: Upload to Slack
+          command: |
+            export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+            curl -F file=@android/app/build/outputs/bundle/release/app.aab -F channels=$SLACK_CHANNEL -F token=$SLACK_API_TOKEN -F title="Here is new TIA release bundle file"  https://slack.com/api/files.upload
+
+workflows:
+  version: 2
+  node-android-ios:
+    jobs:
+      - android
