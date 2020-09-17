@@ -1,36 +1,43 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import React, { useState, useEffect } from 'react';
+import auth from '@react-native-firebase/auth';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
 
-const Tab = createMaterialBottomTabNavigator();
-
-function HomeScreen() {
-	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			<Text>Home!</Text>
-		</View>
-	);
-}
-
-function SettingsScreen() {
-	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			<Text>Settings!</Text>
-		</View>
-	);
-}
-
-const SampleTabs = () => {
-	return (
-		<Tab.Navigator>
-			<Tab.Screen name="Home" component={HomeScreen} />
-			<Tab.Screen name="Settings" component={SettingsScreen} />
-		</Tab.Navigator>
-	);
-};
+import AuthNavigator from './navigation/AuthNavigator';
+import MainNavigator from './navigation/MainNavigator';
+import { getFirebaseUser } from './utils/firebase';
+import AsyncStorage from '@react-native-community/async-storage';
+import { API_BASE_URL } from '@env';
+import InitialLoadingScreen from './screens/InitialLoading/InitialLoadingScreen';
 
 const AppContent = () => {
-	return <SampleTabs />;
+	const [authStatus, setAuthStatus] = useState('checking'); // checking, authenticated, unauthenticated
+
+	const onAuthStateChanged = async () => {
+		const _user = getFirebaseUser();
+		setAuthStatus(_user ? 'authenticated' : 'unauthenticated');
+		await AsyncStorage.setItem('USER', JSON.stringify(_user));
+		if (_user) {
+			// const accessToken = await getFirebaseToken();
+			// TODO: Include token in interceptor
+		}
+	};
+
+	useEffect(() => {
+		console.log(API_BASE_URL);
+		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+		return subscriber;
+	}, []);
+
+	if (authStatus === 'unauthenticated') {
+		return <AuthNavigator />;
+	}
+
+	if (authStatus === 'authenticated') {
+		return <MainNavigator />;
+	}
+
+	return <InitialLoadingScreen />;
 };
 
 export default AppContent;

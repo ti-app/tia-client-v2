@@ -28,6 +28,7 @@ build/
 .gradle
 local.properties
 *.iml
+*.hprof
 
 # node.js
 #
@@ -65,3 +66,11 @@ index.android.bundle
 
 # Local prettier file
 /.prettierrc
+
+# Local files
+TODO.md
+temp/**/*
+
+# Env files
+.env
+.env.*

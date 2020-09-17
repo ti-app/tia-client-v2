@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">tiapp</string>
+    <string name="app_name">TIA</string>
+    <string name="facebook_app_id">2439803646062305</string>
 </resources>

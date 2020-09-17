@@ -10,6 +10,7 @@ target 'tiapp' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+
   target 'tiappTests' do
     inherit! :complete
     # Pods for testing
