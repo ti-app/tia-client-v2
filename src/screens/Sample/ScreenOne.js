@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CustomIcon } from '../../shared';
 
 const ScreenOne = () => {
 	const [searchQuery, setSearchQuery] = useState('');
@@ -24,6 +25,9 @@ const ScreenOne = () => {
 				</View>
 			</View>
 			<Text>Screen One</Text>
+			<Text>Custom Icon</Text>
+
+			<CustomIcon name="newspaper" size={20} color="green" />
 		</View>
 	);
 };

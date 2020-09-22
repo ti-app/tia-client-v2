@@ -2,7 +2,7 @@ Some of the things might not work since the latest migration to latest react nat
 
 TODO: Update this document wherever it is not applicable.
 
-# 💻 Setup (Currently for Android Only)
+# 💻 Setup
 
 1: Clone the repo and `cd` to root directory.
 
@@ -170,6 +170,9 @@ To disable:
 ```
 adb shell setprop debug.firebase.analytics.app .none.
 ```
+
+- If the updated icomoon.ttf isn't reflected in the App, run `npx react-native link` too copy the font file
+  in the required places. Do not rename the icomoon.ttf file, changing the name will mess up the project.
 
 # Samples
 

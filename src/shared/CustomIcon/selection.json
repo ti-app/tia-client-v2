@@ -1,0 +1,100 @@
+{
+	"IcoMoonType": "selection",
+	"icons": [
+		{
+			"icon": {
+				"paths": [
+					"M0 1024h512v-1024h-512v1024zM320 128h128v128h-128v-128zM320 384h128v128h-128v-128zM320 640h128v128h-128v-128zM64 128h128v128h-128v-128zM64 384h128v128h-128v-128zM64 640h128v128h-128v-128zM576 320h448v64h-448zM576 1024h128v-256h192v256h128v-576h-448z"
+				],
+				"tags": ["office", "buildings", "work"],
+				"defaultCode": 59651,
+				"grid": 16,
+				"attrs": []
+			},
+			"attrs": [],
+			"properties": {
+				"ligatures": "office, buildings",
+				"name": "office",
+				"order": 9,
+				"id": 4,
+				"prevSize": 32,
+				"code": 59651
+			},
+			"setIdx": 0,
+			"setId": 1,
+			"iconIdx": 3
+		},
+		{
+			"icon": {
+				"paths": [
+					"M896 256v-128h-896v704c0 35.346 28.654 64 64 64h864c53.022 0 96-42.978 96-96v-544h-128zM832 832h-768v-640h768v640zM128 320h640v64h-640zM512 448h256v64h-256zM512 576h256v64h-256zM512 704h192v64h-192zM128 448h320v320h-320z"
+				],
+				"tags": ["newspaper", "news", "paper"],
+				"defaultCode": 59652,
+				"grid": 16,
+				"attrs": []
+			},
+			"attrs": [],
+			"properties": {
+				"ligatures": "newspaper, news",
+				"name": "newspaper",
+				"order": 8,
+				"id": 5,
+				"prevSize": 32,
+				"code": 59652
+			},
+			"setIdx": 0,
+			"setId": 1,
+			"iconIdx": 4
+		},
+		{
+			"icon": {
+				"paths": [
+					"M864 0c88.364 0 160 71.634 160 160 0 36.020-11.91 69.258-32 96l-64 64-224-224 64-64c26.742-20.090 59.978-32 96-32zM64 736l-64 288 288-64 592-592-224-224-592 592zM715.578 363.578l-448 448-55.156-55.156 448-448 55.156 55.156z"
+				],
+				"tags": ["pencil", "write", "edit"],
+				"defaultCode": 59653,
+				"grid": 16,
+				"attrs": []
+			},
+			"attrs": [],
+			"properties": {
+				"ligatures": "pencil, write",
+				"name": "pencil",
+				"order": 7,
+				"id": 6,
+				"prevSize": 32,
+				"code": 59653
+			},
+			"setIdx": 0,
+			"setId": 1,
+			"iconIdx": 5
+		}
+	],
+	"height": 1024,
+	"metadata": { "name": "icomoon" },
+	"preferences": {
+		"showGlyphs": true,
+		"showQuickUse": true,
+		"showQuickUse2": true,
+		"showSVGs": true,
+		"fontPref": {
+			"prefix": "icon-",
+			"metadata": { "fontFamily": "icomoon" },
+			"metrics": { "emSize": 1024, "baseline": 6.25, "whitespace": 50 },
+			"embed": false
+		},
+		"imagePref": {
+			"prefix": "icon-",
+			"png": true,
+			"useClassSelector": true,
+			"color": 0,
+			"bgColor": 16777215,
+			"classSelector": ".icon",
+			"name": "icomoon"
+		},
+		"historySize": 50,
+		"showCodes": true,
+		"gridSize": 16
+	}
+}

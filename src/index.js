@@ -29,7 +29,6 @@ const AppContent = () => {
 		AsyncStorage.getItem('SHOW_APP_INTRO').then((val) => {
 			if (val && val === 'false') {
 				// User has seen app intro
-				console.log(API_BASE_URL);
 				const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 				return subscriber;
 			} else {
@@ -41,7 +40,7 @@ const AppContent = () => {
 	}, []);
 
 	if (showAppIntro) {
-		return <AppIntro />;
+		return <AppIntro onDone={() => setShowAppIntro(false)} />;
 	}
 
 	if (authStatus === 'unauthenticated') {

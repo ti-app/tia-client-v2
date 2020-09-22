@@ -28,8 +28,7 @@ const introSlides = [
 	},
 ];
 
-const AppIntro = () => {
-	const navigation = useNavigation();
+const AppIntro = ({ onDone }) => {
 	const handleIntroDone = () => {};
 	const renderItem = ({ item }) => {
 		return (
@@ -57,12 +56,7 @@ const AppIntro = () => {
 				color="blue"
 				show
 			>
-				<Button
-					mode="outlined"
-					onPress={() => {
-						navigation.navigate('Login');
-					}}
-				>
+				<Button mode="outlined" onPress={onDone}>
 					Login
 				</Button>
 			</View>

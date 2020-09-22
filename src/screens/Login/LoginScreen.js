@@ -1,49 +1,86 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
-import AsyncStorage from '@react-native-community/async-storage';
+import { Text, Button } from 'react-native-paper';
 import analytics from '@react-native-firebase/analytics';
 import auth from '@react-native-firebase/auth';
+import { LoginManager, AccessToken as FBAccessToken } from 'react-native-fbsdk';
+import { GoogleSignin } from '@react-native-community/google-signin';
+import { GOOGLE_WEB_CLIENT_ID } from '@env';
 
-import styles from './LoginScreen.style';
-import SocialLogin from '../../shared/SocialLogin/SocialLogin';
 import logger from '../../utils/logger';
+import styles from './LoginScreen.style';
 
-const LoginScreen = ({ navigation }) => {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+GoogleSignin.configure({
+	webClientId: GOOGLE_WEB_CLIENT_ID,
+});
 
-	const onLoginClick = async () => {
-		auth()
-			.signInWithEmailAndPassword(email, password)
-			.then(async (firebaseUser) => {
-				try {
-					analytics().logLogin({
-						method: 'email',
-					});
-					navigation.navigate('Home');
-					await AsyncStorage.setItem('USER', JSON.stringify(firebaseUser));
-				} catch (error) {
-					logger.logError(error, 'Error while saving user in async storage.');
-				}
-			})
-			.catch((error) => {
-				logger.logError(error, 'Error while login.');
+const LoginScreen = () => {
+	const signInWithFB = async () => {
+		const { isCancelled } = await LoginManager.logInWithPermissions(['public_profile']);
+
+		if (!isCancelled) {
+			const { accessToken } = await FBAccessToken.getCurrentAccessToken();
+
+			const credential = auth.FacebookAuthProvider.credential(accessToken);
+
+			await auth().signInWithCredential(credential);
+
+			analytics().logLogin({
+				method: 'facebook',
 			});
+		}
+	};
+
+	const signInWithGoogle = async () => {
+		await GoogleSignin.hasPlayServices();
+		const googleUser = await GoogleSignin.signIn();
+
+		const credential = auth.GoogleAuthProvider.credential(
+			googleUser.idToken,
+			googleUser.accessToken
+		);
+
+		await auth().signInWithCredential(credential);
+		analytics().logLogin({
+			method: 'google',
+		});
+	};
+
+	const handleFBSignIn = async () => {
+		try {
+			await signInWithFB();
+		} catch (error) {
+			logger.logError(error, 'Error login with facebook');
+		}
+	};
+
+	const handleGoogleSignIn = async () => {
+		try {
+			await signInWithGoogle();
+		} catch (error) {
+			logger.logError(error, 'Error login with google');
+		}
 	};
 
 	return (
-		<View>
-			<TextInput label="Email" value={email} onChangeText={(_email) => setEmail(_email)} />
-			<TextInput
-				label="Password"
-				value={password}
-				onChangeText={(_password) => setPassword(_password)}
-			/>
-			<Button mode="contained" onPress={onLoginClick}>
-				Login
-			</Button>
-			<SocialLogin />
+		<View style={styles.loginScreen}>
+			<Text style={styles.loginLabel}>Log in with</Text>
+			<View>
+				<Button
+					mode="contained"
+					style={[styles.socialLoginButton, styles.facebookButton]}
+					onPress={handleFBSignIn}
+				>
+					<Text style={styles.socialLoginButtonText}>FACEBOOK</Text>
+				</Button>
+				<Button
+					mode="contained"
+					style={[styles.socialLoginButton, styles.googleButton]}
+					onPress={handleGoogleSignIn}
+				>
+					<Text style={styles.socialLoginButtonText}>GOOGLE</Text>
+				</Button>
+			</View>
 		</View>
 	);
 };
