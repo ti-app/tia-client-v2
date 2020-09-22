@@ -9,11 +9,11 @@ import customTheme from './theme';
 const App = () => {
 	return (
 		<StoreProvider store={store}>
-			<NavigationContainer>
-				<PaperProvider theme={customTheme}>
+			<PaperProvider theme={customTheme}>
+				<NavigationContainer>
 					<AppContent />
-				</PaperProvider>
-			</NavigationContainer>
+				</NavigationContainer>
+			</PaperProvider>
 		</StoreProvider>
 	);
 };

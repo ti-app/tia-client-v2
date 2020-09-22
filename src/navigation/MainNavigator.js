@@ -8,7 +8,13 @@ const MainStack = createStackNavigator();
 const MainNavigator = () => {
 	return (
 		<MainStack.Navigator>
-			<MainStack.Screen name="Home" component={HomeTabNavigator} />
+			<MainStack.Screen
+				name="Home"
+				component={HomeTabNavigator}
+				options={{
+					headerShown: false,
+				}}
+			/>
 		</MainStack.Navigator>
 	);
 };

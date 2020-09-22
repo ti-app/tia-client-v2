@@ -9,9 +9,11 @@ import { getFirebaseUser } from './utils/firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import { API_BASE_URL } from '@env';
 import InitialLoadingScreen from './screens/InitialLoading/InitialLoadingScreen';
+import AppIntro from './screens/AppIntro/AppIntro';
 
 const AppContent = () => {
 	const [authStatus, setAuthStatus] = useState('checking'); // checking, authenticated, unauthenticated
+	const [showAppIntro, setShowAppIntro] = useState(false);
 
 	const onAuthStateChanged = async () => {
 		const _user = getFirebaseUser();
@@ -24,10 +26,23 @@ const AppContent = () => {
 	};
 
 	useEffect(() => {
-		console.log(API_BASE_URL);
-		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-		return subscriber;
+		AsyncStorage.getItem('SHOW_APP_INTRO').then((val) => {
+			if (val && val === 'false') {
+				// User has seen app intro
+				console.log(API_BASE_URL);
+				const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+				return subscriber;
+			} else {
+				// show app intro
+				setShowAppIntro(true);
+				AsyncStorage.setItem('SHOW_APP_INTRO', JSON.stringify(false));
+			}
+		});
 	}, []);
+
+	if (showAppIntro) {
+		return <AppIntro />;
+	}
 
 	if (authStatus === 'unauthenticated') {
 		return <AuthNavigator />;
