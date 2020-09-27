@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,14 +11,24 @@ const AddScreen = () => {
 
 	const onChangeSearch = (query) => setSearchQuery(query);
 
-	const addSheetRef = useRef(null);
+	const addSheetRef = useCallback((node) => {
+		if (node !== null) {
+			addSheetRef.current = node;
+			setTimeout(() => {
+				addSheetRef.current.snapTo(1);
+				setTimeout(() => {
+					addSheetRef.current.snapTo(2);
+				}, 50);
+			}, 50);
+		}
+	}, []);
 
 	const AddSheet = () => {
 		return (
 			<>
 				<View style={styles.addSheetHandleContainer}>
 					<View style={styles.addSheetHandle} />
-					<AddPanel onTabClick={() => addSheetRef.current.snapTo(300)} />
+					<AddPanel onTabClick={() => addSheetRef.current.snapTo(1)} />
 				</View>
 			</>
 		);
@@ -45,7 +55,7 @@ const AddScreen = () => {
 			<BottomSheet
 				ref={addSheetRef}
 				snapPoints={[450, 300, 80]}
-				enabledBottomInitialAnimation={true}
+				initialSnap={2}
 				borderRadius={10}
 				renderContent={AddSheet}
 			/>
