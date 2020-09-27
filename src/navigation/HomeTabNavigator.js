@@ -8,6 +8,7 @@ import ScreenOne from '../screens/Sample/ScreenOne';
 import ScreenTwo from '../screens/Sample/ScreenTwo';
 import UserProfileScreen from '../screens/UserProfile/UserProfileScreen';
 import AppIntro from '../screens/AppIntro/AppIntro';
+import AddScreen from '../screens/Add/AddScreen';
 
 const HomeTab = createMaterialBottomTabNavigator();
 
@@ -22,7 +23,7 @@ const HomeTabNavigator = () => {
 		>
 			<HomeTab.Screen
 				name="Add"
-				component={ScreenOne}
+				component={AddScreen}
 				options={{
 					// headerShown: false,
 					tabBarLabel: 'Add',
