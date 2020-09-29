@@ -76,7 +76,7 @@ jobs:
           name: Build bundle (.aab file)
           command: |
             cd android
-            ./gradlew bundleRelease --stacktrace
+            ./gradlew bundleRelease --stacktrace --scan
       - store_test_results:
           path: android/app/build/outputs/apk/
           destination: apks/
