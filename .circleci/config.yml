@@ -76,7 +76,7 @@ jobs:
           name: Build release APK
           command: |
             cd android
-            ./gradlew assembleRelease
+            ./gradlew assembleRelease -x app:bundleReleaseJsAndAssets
       - store_test_results:
           path: android/app/build/outputs/bundle/
           destination: bundles/
