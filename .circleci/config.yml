@@ -65,7 +65,7 @@ jobs:
           name: Build release APK
           command: |
             cd android
-            ./gradlew assembleRelease
+            ./gradlew assembleRelease -x bundleReleaseJsAndAssets
 
       - run:
           name: Upload apk to Slack
