@@ -33,9 +33,6 @@ jobs:
             echo "GOOGLE_PLACES_API_KEY=$GOOGLE_PLACES_API_KEY" >> ${HOME}/tia-client-react-native/.env
             echo "GOOGLE_GEOCODING_API_KEY=$GOOGLE_GEOCODING_API_KEY" >> ${HOME}/tia-client-react-native/.env
 
-      # - run:
-      #     name: Generate android bundle
-      #     command: yarn bundle-android
       - save_cache:
           key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
           paths:
@@ -45,14 +42,6 @@ jobs:
           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
           paths:
             - node_modules
-
-      - restore_cache:
-          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
-
-      - save_cache:
-          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
-          paths:
-            - vendor/bundle
 
       - run:
           name: Setup keystore properties
@@ -68,21 +57,15 @@ jobs:
           command: |
             echo $KEYSTORE | base64 -d  > ${HOME}/tia-client-react-native/android/app/tiarelease.keystore
       - run:
-          name: Build release APK
-          command: |
-            cd android
-            ./gradlew assembleRelease
-      - run:
           name: Build bundle (.aab file)
           command: |
             cd android
-            ./gradlew bundleRelease --stacktrace
-      - store_test_results:
-          path: android/app/build/outputs/apk/
-          destination: apks/
-      - store_test_results:
-          path: android/app/build/outputs/bundle/
-          destination: bundles/
+            ./gradlew bundleRelease
+      - run:
+          name: Build release APK
+          command: |
+            cd android
+            ./gradlew assembleRelease -x bundleReleaseJsAndAssets
 
       - run:
           name: Upload apk to Slack
@@ -93,7 +76,7 @@ jobs:
           name: Upload aab to Slack
           command: |
             export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
-            curl -F file=@android/app/build/outputs/bundle/release/app.aab -F channels=$SLACK_CHANNEL -F token=$SLACK_API_TOKEN -F title="Here is new TIA release bundle file"  https://slack.com/api/files.upload
+            curl -F file=@android/app/build/outputs/bundle/release/app-release.aab -F channels=$SLACK_CHANNEL -F token=$SLACK_API_TOKEN -F title="Here is new TIA release bundle file"  https://slack.com/api/files.upload
 
 workflows:
   version: 2
