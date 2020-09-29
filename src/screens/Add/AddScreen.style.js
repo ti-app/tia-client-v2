@@ -1,17 +1,18 @@
 import { StyleSheet } from 'react-native';
+import variables from '../../../theme/variables';
 
 export default StyleSheet.create({
 	container: {
 		flex: 1,
 	},
 	topBarContainer: {
-		marginHorizontal: 16,
-		marginTop: 26,
+		marginHorizontal: variables.space.base,
+		marginTop: variables.space.large,
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
 	topBarIconContainer: {
-		marginLeft: 8,
+		marginLeft: variables.space.small,
 
 		width: 38,
 		height: '100%',
@@ -33,7 +34,7 @@ export default StyleSheet.create({
 		alignSelf: 'center',
 	},
 	addSheetHandleContainer: {
-		padding: 16,
+		padding: variables.space.base,
 		backgroundColor: '#fff',
 		height: '100%',
 	},

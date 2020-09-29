@@ -19,7 +19,7 @@ const HomeTabNavigator = () => {
 			labeled={true}
 			shifting={false}
 			activeColor={colors.primary}
-			barStyle={{ backgroundColor: colors.surface }}
+			barStyle={{ height: 60, backgroundColor: colors.surface }}
 		>
 			<HomeTab.Screen
 				name="Add"

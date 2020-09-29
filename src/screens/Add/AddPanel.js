@@ -3,13 +3,10 @@ import { Dimensions, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, Text, useTheme } from 'react-native-paper';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import variables from '../../../theme/variables';
 import styles from './AddPanel.style';
 
 const AddPanel = ({ onTabClick }) => {
 	const [index, setIndex] = useState(0);
-
-	const { colors } = useTheme();
 
 	const [routes] = useState([
 		{ key: 'addPlant', title: 'Add Plants' },
