@@ -67,22 +67,22 @@ jobs:
           name: Setup keystore
           command: |
             echo $KEYSTORE | base64 -d  > ${HOME}/tia-client-react-native/android/app/tiarelease.keystore
-      # - run:
-      #     name: Build release APK
-      #     command: |
-      #       cd android
-      #       ./gradlew assembleRelease
       - run:
           name: Build bundle (.aab file)
           command: |
             cd android
-            ./gradlew bundleRelease --stacktrace --scan
-      # - store_test_results:
-      #     path: android/app/build/outputs/apk/
-      #     destination: apks/
-      # - store_test_results:
-      #     path: android/app/build/outputs/bundle/
-      #     destination: bundles/
+            ./gradlew bundleRelease
+      - run:
+          name: Build release APK
+          command: |
+            cd android
+            ./gradlew assembleRelease
+      - store_test_results:
+          path: android/app/build/outputs/bundle/
+          destination: bundles/
+      - store_test_results:
+          path: android/app/build/outputs/apk/
+          destination: apks/
 
       # - run:
       #     name: Upload apk to Slack
