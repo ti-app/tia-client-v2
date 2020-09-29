@@ -4,7 +4,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from 'react-native-paper';
 
-import ScreenOne from '../screens/Sample/ScreenOne';
 import ScreenTwo from '../screens/Sample/ScreenTwo';
 import UserProfileScreen from '../screens/UserProfile/UserProfileScreen';
 import AppIntro from '../screens/AppIntro/AppIntro';
@@ -18,6 +17,7 @@ const HomeTabNavigator = () => {
 	return (
 		<HomeTab.Navigator
 			labeled={true}
+			shifting={false}
 			activeColor={colors.primary}
 			barStyle={{ backgroundColor: colors.surface }}
 		>
@@ -25,7 +25,6 @@ const HomeTabNavigator = () => {
 				name="Add"
 				component={AddScreen}
 				options={{
-					// headerShown: false,
 					tabBarLabel: 'Add',
 					tabBarIcon: ({ color }) => (
 						<MaterialIcons name="add-photo-alternate" color={color} size={26} />

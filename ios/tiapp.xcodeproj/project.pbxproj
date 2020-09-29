@@ -37,6 +37,7 @@
 		F022273A60314404AB53F444 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F0E09AF670D147F9A63FBA36 /* Zocial.ttf */; };
 		FE1A6E64285247E1B9CA525A /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E77F1AA8B41241689B249656 /* EvilIcons.ttf */; };
 		C410394118CB4E2FAF202E3A /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2C4E812AE6854262A667A657 /* icomoon.ttf */; };
+		81C24B40C3EE41C2A80491A4 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C133D3C0369441368699A31B /* Roboto-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,7 @@
 		F0E09AF670D147F9A63FBA36 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		F3F400CABFF445A3A7594D68 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		2C4E812AE6854262A667A657 /* icomoon.ttf */ = {isa = PBXFileReference; name = "icomoon.ttf"; path = "../assets/fonts/icomoon.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C133D3C0369441368699A31B /* Roboto-Regular.ttf */ = {isa = PBXFileReference; name = "Roboto-Regular.ttf"; path = "../assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +205,7 @@
 				A078EEF4890A47BCB68C01D3 /* SimpleLineIcons.ttf */,
 				F0E09AF670D147F9A63FBA36 /* Zocial.ttf */,
 				2C4E812AE6854262A667A657 /* icomoon.ttf */,
+				C133D3C0369441368699A31B /* Roboto-Regular.ttf */,
 			);
 			name = Resources;
 			path = "";
@@ -421,6 +424,7 @@
 				72D28C2BB31E4738A0B90F3B /* SimpleLineIcons.ttf in Resources */,
 				F022273A60314404AB53F444 /* Zocial.ttf in Resources */,
 				C410394118CB4E2FAF202E3A /* icomoon.ttf in Resources */,
+				81C24B40C3EE41C2A80491A4 /* Roboto-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

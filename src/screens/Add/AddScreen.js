@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View } from 'react-native';
-import { Searchbar, Text } from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
+import variables from '../../../theme/variables';
 import AddPanel from './AddPanel';
 import styles from './AddScreen.style';
 
@@ -45,10 +46,10 @@ const AddScreen = () => {
 						style={styles.searchBar}
 					/>
 					<View style={styles.topBarIconContainer}>
-						<MaterialCommunityIcons name="tune" size={26} />
+						<MaterialCommunityIcons name="tune" size={variables.font.xxl} />
 					</View>
 					<View style={styles.topBarIconContainer}>
-						<MaterialCommunityIcons name="bell-outline" size={26} />
+						<MaterialCommunityIcons name="bell-outline" size={variables.font.xxl} />
 					</View>
 				</View>
 			</View>

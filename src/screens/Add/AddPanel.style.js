@@ -1,26 +1,29 @@
 import { StyleSheet } from 'react-native';
+import colors, { black, white } from '../../../theme/colors';
+import variables from '../../../theme/variables';
 
 export default StyleSheet.create({
 	selectMethodContainer: {
 		flex: 1,
-		paddingTop: 16,
+		paddingTop: variables.space.base,
 	},
 	selectMethodButtonsContainer: {
 		display: 'flex',
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		paddingTop: 12,
-		paddingLeft: 4,
+		paddingTop: variables.space.small,
+		paddingLeft: variables.space.xs,
 	},
+	selectMethodText: { color: colors.secondaryText },
 	selectMethodButton: {
-		borderRadius: 32,
-		paddingLeft: 16,
-		paddingRight: 16,
-		marginRight: 4,
-		marginBottom: 12,
+		borderRadius: 2 * variables.space.base,
+		paddingLeft: variables.space.base,
+		paddingRight: variables.space.base,
+		marginRight: variables.space.xs,
+		marginBottom: variables.space.small,
 		borderWidth: 0,
-		backgroundColor: '#fff',
-		shadowColor: '#000',
+		backgroundColor: white,
+		shadowColor: black,
 		shadowOffset: {
 			width: 0,
 			height: 1,
@@ -32,5 +35,19 @@ export default StyleSheet.create({
 	selectMethodButtonText: {
 		fontSize: 12,
 		color: '#4E4E4E',
+	},
+	addTabBar: {
+		flexDirection: 'row',
+		paddingTop: variables.space.base,
+		paddingBottom: variables.space.base,
+	},
+	addTab: { alignItems: 'center', paddingRight: variables.space.large },
+	addTabText: { fontSize: variables.font.base },
+	addTabHighlight: {
+		width: '100%',
+		height: 4,
+		borderRadius: 4,
+		backgroundColor: colors.primary,
+		marginTop: variables.space.xs,
 	},
 });

@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Dimensions, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
 import { TabView, SceneMap } from 'react-native-tab-view';
+import variables from '../../../theme/variables';
 import styles from './AddPanel.style';
 
 const AddPanel = ({ onTabClick }) => {
 	const [index, setIndex] = useState(0);
+
+	const { colors } = useTheme();
+
 	const [routes] = useState([
 		{ key: 'addPlant', title: 'Add Plants' },
 		{ key: 'addPlantationSite', title: 'Add Plantation Site' },
@@ -14,29 +18,19 @@ const AddPanel = ({ onTabClick }) => {
 
 	const AddTabBar = ({ navigationState }) => {
 		return (
-			<View style={{ flexDirection: 'row', paddingTop: 16, paddingBottom: 16 }}>
+			<View style={styles.addTabBar}>
 				{navigationState.routes.map((route, i) => {
 					return (
 						<TouchableOpacity
-							style={{ alignItems: 'center', paddingRight: 24 }}
+							style={styles.addTab}
 							onPress={() => {
 								setIndex(i);
 								onTabClick();
 							}}
 							key={i}
 						>
-							<Text style={{ fontSize: 14 }}>{route.title}</Text>
-							{i === index && (
-								<View
-									style={{
-										width: '100%',
-										height: 4,
-										borderRadius: 4,
-										backgroundColor: '#1C53A9',
-										marginTop: 4,
-									}}
-								/>
-							)}
+							<Text style={styles.addTabText}>{route.title}</Text>
+							{i === index && <View style={styles.addTabHighlight} />}
 						</TouchableOpacity>
 					);
 				})}
@@ -47,7 +41,7 @@ const AddPanel = ({ onTabClick }) => {
 	const SelectMethodForPlants = () => {
 		return (
 			<View style={styles.selectMethodContainer}>
-				<Text style={{ color: '#4E4E4E' }}> Select method to add plants</Text>
+				<Text style={styles.selectMethodText}> Select method to add plants</Text>
 				<View style={styles.selectMethodButtonsContainer}>
 					<Button
 						style={styles.selectMethodButton}
