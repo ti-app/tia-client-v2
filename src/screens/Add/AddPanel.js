@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dimensions, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Button, Text, useTheme } from 'react-native-paper';
+import { Button, Text, TouchableRipple } from 'react-native-paper';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import styles from './AddPanel.style';
 
@@ -18,17 +17,19 @@ const AddPanel = ({ onTabClick }) => {
 			<View style={styles.addTabBar}>
 				{navigationState.routes.map((route, i) => {
 					return (
-						<TouchableOpacity
-							style={styles.addTab}
+						<TouchableRipple
 							onPress={() => {
 								setIndex(i);
 								onTabClick();
 							}}
 							key={i}
+							style={styles.addTabContainer}
 						>
-							<Text style={styles.addTabText}>{route.title}</Text>
-							{i === index && <View style={styles.addTabHighlight} />}
-						</TouchableOpacity>
+							<View style={styles.addTab}>
+								<Text style={styles.addTabText}>{route.title}</Text>
+								{i === index && <View style={styles.addTabHighlight} />}
+							</View>
+						</TouchableRipple>
 					);
 				})}
 			</View>

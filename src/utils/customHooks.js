@@ -1,5 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { Keyboard } from 'react-native';
+import { useDispatch } from 'react-redux';
+import * as uiActions from '../store/actions/ui-interactions.action';
 
 export const usePrevious = (value) => {
 	const ref = useRef();
@@ -31,4 +33,17 @@ export const useKeyboardHideHook = () => {
 	}, []);
 
 	return [isKeyboardOpen, setIsKeyboardOpen];
+};
+
+export const useSnackbar = () => {
+	const dispatch = useDispatch();
+
+	const showSnackbar = useCallback((...params) => dispatch(uiActions.showSnackbar(...params)), [
+		dispatch,
+	]);
+	const hideSnackbar = useCallback((message) => dispatch(uiActions.hideSnackbar(message)), [
+		dispatch,
+	]);
+
+	return { showSnackbar, hideSnackbar };
 };
