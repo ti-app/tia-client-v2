@@ -6,9 +6,8 @@ export default StyleSheet.create({
 		flex: 1,
 	},
 	topBarContainer: {
-		position: 'absolute',
 		marginHorizontal: variables.space.base,
-		top: variables.space.large,
+		marginTop: variables.space.large,
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
