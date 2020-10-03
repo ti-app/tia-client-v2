@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import colors, { black, white } from '../../../theme/colors';
+import * as colors from '../../../theme/colors';
 import variables from '../../../theme/variables';
 
 export default StyleSheet.create({
@@ -22,8 +22,8 @@ export default StyleSheet.create({
 		marginRight: variables.space.xs,
 		marginBottom: variables.space.small,
 		borderWidth: 0,
-		backgroundColor: white,
-		shadowColor: black,
+		backgroundColor: colors.white,
+		shadowColor: colors.black,
 		shadowOffset: {
 			width: 0,
 			height: 1,
@@ -34,20 +34,21 @@ export default StyleSheet.create({
 	},
 	selectMethodButtonText: {
 		fontSize: 12,
-		color: '#4E4E4E',
+		color: colors.secondaryText,
 	},
 	addTabBar: {
 		flexDirection: 'row',
 		paddingTop: variables.space.base,
 		paddingBottom: variables.space.base,
 	},
-	addTab: { alignItems: 'center', paddingRight: variables.space.large },
+	addTabContainer: { marginRight: variables.space.large },
+	addTab: { alignItems: 'center' },
 	addTabText: { fontSize: variables.font.base },
 	addTabHighlight: {
 		width: '100%',
 		height: 4,
 		borderRadius: 4,
-		backgroundColor: colors.primary,
+		backgroundColor: colors.theme.primary,
 		marginTop: variables.space.xs,
 	},
 });

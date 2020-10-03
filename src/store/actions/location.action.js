@@ -1,13 +1,12 @@
 import { RESULTS, PERMISSIONS, request } from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
-import { GOOGLE_PLACES_API_KEY, GOOGLE_GEOCODING_API_KEY } from '@env';
-import Axios from 'axios';
 
 import logger from '../../utils/logger';
+import { callGoogleAutoComplete } from '../../utils/google-api';
 
 export const FETCH_USER_LOCATION_SUCCESS = 'FETCH_USER_LOCATION_SUCCESS';
 export const FETCH_SEARCHED_LOCATION_SUCCESS = 'FETCH_SEARCHED_LOCATION_SUCCESS';
-
+export const SET_MAIN_MAP_CENTER = 'SET_MAIN_MAP_CENTER';
 /**
  * Fetched user location and if mapRef is passed, moves map to userLocation
  * @param {Object} mapRef
@@ -51,15 +50,6 @@ export const fetchUserLocationSuccess = (locationData) => ({
 	payload: locationData,
 });
 
-export const callGoogleAutoComplete = (location, searchQuery) => {
-	const placesApiKey = GOOGLE_PLACES_API_KEY;
-
-	return Axios({
-		url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?location=${location}&input=${searchQuery}&key=${placesApiKey}`,
-		data: { noloading: true },
-	});
-};
-
 export const fetchSearchedLocation = (searchQuery) => async (dispatch, getState) => {
 	const { userLocation } = getState().location;
 
@@ -75,24 +65,12 @@ export const fetchSearchedLocation = (searchQuery) => async (dispatch, getState)
 	}
 };
 
-export const callGooglePlacesApi = async (placeId) => {
-	const geocodeApiKey = GOOGLE_GEOCODING_API_KEY;
-
-	return Axios({
-		url: `https://maps.googleapis.com/maps/api/geocode/json?place_id=${placeId}&key=${geocodeApiKey}`,
-	});
-};
-
-export const callGoogleNearbyApi = async (location, radius = 100) => {
-	const placesApiKey = GOOGLE_PLACES_API_KEY;
-	const { latitude, longitude } = location;
-
-	return Axios({
-		url: `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&key=${placesApiKey}&radius=${radius}&rankby=prominence`,
-	});
-};
-
 export const fetchSearchedLocationSuccess = (data) => ({
 	type: FETCH_SEARCHED_LOCATION_SUCCESS,
+	payload: data,
+});
+
+export const setMainMapCenter = (data) => ({
+	type: SET_MAIN_MAP_CENTER,
 	payload: data,
 });

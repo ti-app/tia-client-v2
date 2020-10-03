@@ -11,17 +11,15 @@ export const red = '#E32B13';
 
 // This values are not required by react native paper but have been
 // added for custom use in components.
-const customColorValues = {
-	tint: blue,
-	headingText: black,
-	sectionHeadingText: gray,
-	secondaryText: darkGray,
-};
+export const tint = blue;
+export const headingText = black;
+export const sectionHeadingText = gray;
+export const secondaryText = darkGray;
+export const success = green;
+export const error = red;
 
-export default {
+export const theme = {
 	primary: blue,
-	success: green,
-	error: red,
 	accent: gray,
 	background: white,
 	surface: white,
@@ -32,5 +30,4 @@ export default {
 	placeholder: Color(black).alpha(0.54).rgb().string(),
 	backdrop: Color(black).alpha(0.5).rgb().string(),
 	notification: blue,
-	...customColorValues,
 };

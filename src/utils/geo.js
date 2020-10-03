@@ -1,4 +1,5 @@
 import destination from '@turf/destination';
+
 import config from '../config/common';
 import logger from './logger';
 

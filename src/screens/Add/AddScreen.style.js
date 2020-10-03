@@ -6,8 +6,9 @@ export default StyleSheet.create({
 		flex: 1,
 	},
 	topBarContainer: {
+		position: 'absolute',
 		marginHorizontal: variables.space.base,
-		marginTop: variables.space.large,
+		top: variables.space.large,
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
@@ -23,9 +24,10 @@ export default StyleSheet.create({
 		justifyContent: 'center',
 		elevation: 4,
 	},
-	searchBar: {
+	autoCompleteSearch: {
 		flex: 4,
 	},
+	autoCompleteSearchFull: {},
 	addSheetHandle: {
 		width: 24,
 		height: 4,

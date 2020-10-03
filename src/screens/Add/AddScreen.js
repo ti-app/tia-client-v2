@@ -1,62 +1,149 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View } from 'react-native';
-import { Searchbar } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
 
 import MapView from '../../shared/Map/MapView/MapView';
+import TreeMarker from '../../shared/Map/Tree/Tree';
+import TreeClusterMarker from '../../shared/Map/TreeCluster/TreeCluster';
 import AddPanel from './AddPanel';
 
 import styles from './AddScreen.style';
 import variables from '../../../theme/variables';
 import { goToMapLocation } from '../../utils/geo';
+import { usePrevious, useKeyboardHideHook, useSnackbar } from '../../utils/customHooks';
 
 import * as locationActions from '../../store/actions/location.action';
-import { selectUserLocation } from '../../store/reducers/location.reducer';
+import * as treeActions from '../../store/actions/tree.action';
+import {
+	selectMainMapCenter,
+	selectSearchedLocations,
+	selectUserLocation,
+} from '../../store/reducers/location.reducer';
 import { useDispatch, useSelector } from 'react-redux';
-
+import AutoCompleteSearch from '../../shared/AutoCompleteSearch/AutoCompleteSearch';
+import { selectTreeGroups } from '../../store/reducers/tree.reducer';
+import logger from '../../utils/logger';
+import { getLocationForGooglePlaceId } from '../../utils/google-api';
 const AddScreen = () => {
 	const [mapRef, setMapRef] = useState(null);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [mapRegion, setMapRegion] = useState(null);
-	const [mapCenter, setMapCenter] = useState({
-		latitude: 18.5740821,
-		longitude: 73.7777393,
-	});
+	const [isSearchOpen, setIsSearchOpen] = useState(false);
+	const mapCenter = useSelector(selectMainMapCenter);
 	const userLocation = useSelector(selectUserLocation);
+	const searchedLocations = useSelector(selectSearchedLocations);
+	const treeGroups = useSelector(selectTreeGroups);
+	const [isKeyboardOpen] = useKeyboardHideHook();
+
+	const { showSnackbar, hideSnackbar } = useSnackbar();
+
+	const prevMapCenter = usePrevious(mapCenter);
 
 	const dispatch = useDispatch();
 	const fetchUserLocation = useCallback(() => dispatch(locationActions.fetchUserLocation()), [
 		dispatch,
 	]);
+	const setMainMapCenter = useCallback(
+		(...param) => dispatch(locationActions.setMainMapCenter(...param)),
+		[dispatch]
+	);
+	const fetchTreeGroups = useCallback(
+		(...param) => dispatch(treeActions.fetchTreeGroups(...param)),
+		[dispatch]
+	);
+	const fetchSearchedLocations = useCallback(
+		(_searchQuery) => dispatch(locationActions.fetchSearchedLocation(_searchQuery)),
+		[dispatch]
+	);
 
-	const addSheetRef = useCallback((_node) => {
-		if (_node !== null) {
-			addSheetRef.current = _node;
-
-			const showInitialBottomSheetAnimation = () => {
-				const animationDuration = 50;
-				setTimeout(() => {
-					addSheetRef.current.snapTo(1);
-					setTimeout(() => {
-						addSheetRef.current.snapTo(2);
-					}, animationDuration);
-				}, animationDuration);
-			};
-
-			showInitialBottomSheetAnimation();
-		}
-	}, []);
+	const addSheetRef = useRef();
 
 	useEffect(() => {
 		fetchUserLocation();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	/**
+	 * When user location changes
+	 *  Navigate map to the user location
+	 *  Set Map Center state
+	 */
 	useEffect(() => {
-		setMapCenter(userLocation);
-		goToMapLocation(mapRef, userLocation);
-	}, [userLocation, mapCenter, mapRef]);
+		if (userLocation && userLocation.latitude && userLocation.longitude) {
+			goToMapLocation(mapRef, userLocation);
+			setMainMapCenter(userLocation);
+		}
+	}, [userLocation, mapRef, setMainMapCenter]);
+
+	/**
+	 * When map center changes
+	 *  Fetch tree groups for map center
+	 */
+	useEffect(() => {
+		if (!mapCenter) {
+			return;
+		}
+
+		const { latitude: mapCenterLat, longitude: mapCenterLng } = mapCenter;
+
+		const mapCenterChanged = !prevMapCenter
+			? true
+			: prevMapCenter.latitude !== mapCenterLat || prevMapCenter.longitude !== mapCenterLng;
+
+		if (mapCenterChanged) {
+			fetchTreeGroups(mapCenter);
+			console.log(mapCenter);
+			showSnackbar('Fetching trees...', {
+				action: { label: 'Dismiss', onPress: () => hideSnackbar() },
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [mapCenter, fetchTreeGroups]);
+
+	useEffect(() => {
+		if (!searchQuery || searchQuery === '') {
+			setIsSearchOpen(false);
+		} else {
+			setIsSearchOpen(true);
+			fetchSearchedLocations(searchQuery);
+		}
+	}, [searchQuery, fetchSearchedLocations]);
+
+	const onChangeSearch = (query) => setSearchQuery(query);
+
+	const handleOnRegionChange = (_region) => {
+		setMainMapCenter(_region);
+	};
+
+	const handleSearchedResultPress = async (_result) => {
+		const { placeId } = _result;
+		try {
+			const location = await getLocationForGooglePlaceId(placeId);
+			if (location && location.latitude && location.longitude) {
+				setIsSearchOpen(false);
+				goToMapLocation(mapRef, location);
+				setMainMapCenter(location);
+			}
+		} catch (error) {
+			logger.logError(error, 'Error getting location for google place id.');
+		}
+	};
+
+	const renderTrees = (_data) => {
+		return treeGroups.map((_treeGroup) => {
+			const { location, trees, _id } = _treeGroup;
+			const markerCoords = {
+				latitude: location.coordinates[1],
+				longitude: location.coordinates[0],
+			};
+
+			if (trees.length === 1) {
+				return <TreeMarker key={trees[0]._id} coordinate={markerCoords} />;
+			}
+
+			return <TreeClusterMarker key={_id} coordinate={markerCoords} treeCount={trees.length} />;
+		});
+	};
 
 	const AddSheet = () => {
 		return (
@@ -67,28 +154,29 @@ const AddScreen = () => {
 		);
 	};
 
-	const onChangeSearch = (query) => setSearchQuery(query);
-
-	const handleOnRegionChange = (_region) => {
-		setMapRegion(_region);
-	};
-
 	return (
 		<>
 			<View style={styles.container}>
 				<View style={styles.topBarContainer}>
-					<Searchbar
+					<AutoCompleteSearch
+						onResultPress={handleSearchedResultPress}
 						placeholder="Search Location"
 						onChangeText={onChangeSearch}
 						value={searchQuery}
-						style={styles.searchBar}
+						results={isSearchOpen ? searchedLocations : null}
+						style={isSearchOpen ? styles.autoCompleteSearchFull : styles.autoCompleteSearch}
+						onRegionChangeComplete={handleOnRegionChange}
 					/>
-					<View style={styles.topBarIconContainer}>
-						<MaterialCommunityIcons name="tune" size={variables.font.xxl} />
-					</View>
-					<View style={styles.topBarIconContainer}>
-						<MaterialCommunityIcons name="bell-outline" size={variables.font.xxl} />
-					</View>
+					{!isSearchOpen && (
+						<View style={styles.topBarIconContainer}>
+							<MaterialCommunityIcons name="tune" size={variables.font.xxl} />
+						</View>
+					)}
+					{!isSearchOpen && (
+						<View style={styles.topBarIconContainer}>
+							<MaterialCommunityIcons name="bell-outline" size={variables.font.xxl} />
+						</View>
+					)}
 				</View>
 				<MapView
 					initialRegion={{
@@ -104,15 +192,19 @@ const AddScreen = () => {
 					showsCompass={false}
 					showsMyLocationButton={false}
 					onRegionChangeComplete={handleOnRegionChange}
-				/>
+				>
+					{renderTrees()}
+				</MapView>
 			</View>
-			<BottomSheet
-				ref={addSheetRef}
-				snapPoints={[450, 300, 80]}
-				initialSnap={2}
-				borderRadius={10}
-				renderContent={AddSheet}
-			/>
+			{!isKeyboardOpen && (
+				<BottomSheet
+					ref={addSheetRef}
+					snapPoints={[450, 300, 120, 80]}
+					initialSnap={2}
+					borderRadius={8}
+					renderContent={AddSheet}
+				/>
+			)}
 		</>
 	);
 };

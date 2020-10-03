@@ -1,11 +1,11 @@
 import { DefaultTheme } from 'react-native-paper';
-import tiaColors from './colors';
+import * as colors from './colors';
 import tiaFonts from './font';
 
 export default {
 	...DefaultTheme,
 	roundness: 4,
-	colors: tiaColors,
+	colors: colors.theme,
 	animation: {
 		scale: 1.0,
 	},
