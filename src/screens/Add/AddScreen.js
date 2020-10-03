@@ -92,7 +92,6 @@ const AddScreen = () => {
 
 		if (mapCenterChanged) {
 			fetchTreeGroups(mapCenter);
-			console.log(mapCenter);
 			showSnackbar('Fetching trees...', {
 				action: { label: 'Dismiss', onPress: () => hideSnackbar() },
 			});
@@ -108,8 +107,6 @@ const AddScreen = () => {
 			fetchSearchedLocations(searchQuery);
 		}
 	}, [searchQuery, fetchSearchedLocations]);
-
-	const onChangeSearch = (query) => setSearchQuery(query);
 
 	const handleOnRegionChange = (_region) => {
 		setMainMapCenter(_region);
@@ -161,11 +158,10 @@ const AddScreen = () => {
 					<AutoCompleteSearch
 						onResultPress={handleSearchedResultPress}
 						placeholder="Search Location"
-						onChangeText={onChangeSearch}
+						onChangeText={(_query) => setSearchQuery(_query)}
 						value={searchQuery}
 						results={isSearchOpen ? searchedLocations : null}
 						style={isSearchOpen ? styles.autoCompleteSearchFull : styles.autoCompleteSearch}
-						onRegionChangeComplete={handleOnRegionChange}
 					/>
 					{!isSearchOpen && (
 						<View style={styles.topBarIconContainer}>
