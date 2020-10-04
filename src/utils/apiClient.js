@@ -1,16 +1,21 @@
 import axios from 'axios';
 import commonConfig from '../config/common';
 
-const apiClient = (config) => axios({ baseURL: commonConfig.api.base, ...config });
+// const apiClient = (config) => axios({ baseURL: commonConfig.api.base, ...config });
 
-export default apiClient;
+const axiosInstance = axios.create({
+	baseURL: commonConfig.api.base,
+});
+
+export default axiosInstance;
+// export default apiClient;
 
 export const initializeAxiosInterceptors = (
 	accessToken,
 	requestInterceptorCB,
 	responseInterceptorCB
 ) => {
-	axios.interceptors.request.use(
+	axiosInstance.interceptors.request.use(
 		(config) => {
 			const { headers, ...rest } = config;
 			requestInterceptorCB(config);
@@ -25,11 +30,15 @@ export const initializeAxiosInterceptors = (
 		},
 		(error) => Promise.reject(error)
 	);
-	axios.interceptors.response.use(
+	axiosInstance.interceptors.response.use(
 		(response) => {
 			responseInterceptorCB(response);
 			return response;
 		},
 		(error) => Promise.reject(error)
 	);
+};
+
+export const getUserActivity = (userId) => {
+	return axiosInstance.get(`user/${userId}/activity`);
 };

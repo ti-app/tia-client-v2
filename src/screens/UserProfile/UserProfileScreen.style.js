@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
-import colors, { black, white } from '../../../theme/colors';
+import * as colors from '../../../theme/colors';
 import variables from '../../../theme/variables';
 
 export default StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.surface,
+		backgroundColor: colors.theme.surface,
 	},
 
 	profileInfoContainer: {

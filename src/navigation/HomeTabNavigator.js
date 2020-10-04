@@ -8,18 +8,19 @@ import ScreenTwo from '../screens/Sample/ScreenTwo';
 import UserProfileScreen from '../screens/UserProfile/UserProfileScreen';
 import AppIntro from '../screens/AppIntro/AppIntro';
 import AddScreen from '../screens/Add/AddScreen';
+import * as colors from '../../theme/colors';
 
 const HomeTab = createMaterialBottomTabNavigator();
 
 const HomeTabNavigator = () => {
-	const { colors } = useTheme();
+	// const { colors } = useTheme();
 
 	return (
 		<HomeTab.Navigator
 			labeled={true}
 			shifting={false}
-			activeColor={colors.primary}
-			barStyle={{ height: 56, backgroundColor: colors.surface }}
+			activeColor={colors.theme.primary}
+			barStyle={{ height: 56, backgroundColor: colors.theme.surface }}
 		>
 			<HomeTab.Screen
 				name="Add"
