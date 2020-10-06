@@ -27,12 +27,19 @@ const AppContent = () => {
 
 	const onAuthStateChanged = async () => {
 		const _user = getFirebaseUser();
-		setAuthStatus(_user ? 'authenticated' : 'unauthenticated');
 		await AsyncStorage.setItem('USER', JSON.stringify(_user));
+		const showAppIntroVal = await AsyncStorage.getItem('SHOW_APP_INTRO');
+
+		if (!showAppIntroVal || showAppIntroVal !== 'false') {
+			// show app intro
+			setShowAppIntro(true);
+			AsyncStorage.setItem('SHOW_APP_INTRO', JSON.stringify(false));
+		}
 		if (_user) {
 			const accessToken = await getFirebaseToken();
 			initializeInterceptors(accessToken);
 		}
+		setAuthStatus(_user ? 'authenticated' : 'unauthenticated');
 	};
 
 	const initializeInterceptors = useCallback(
@@ -52,17 +59,8 @@ const AppContent = () => {
 	);
 
 	useEffect(() => {
-		AsyncStorage.getItem('SHOW_APP_INTRO').then((val) => {
-			if (val && val === 'false') {
-				// User has seen app intro
-				const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-				return subscriber;
-			} else {
-				// show app intro
-				setShowAppIntro(true);
-				AsyncStorage.setItem('SHOW_APP_INTRO', JSON.stringify(false));
-			}
-		});
+		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+		return subscriber;
 	}, []);
 
 	const getNavigator = () => {
