@@ -40,8 +40,9 @@ export const fetchTreeGroups = (
 			headers: {
 				'content-type': 'application/json',
 			},
-			data: { noloading: true },
+			data: { noloading: true, cancelPrevious: true },
 		});
+
 		dispatch(fetchTreeGroupsSuccess(response.data));
 	} catch (error) {
 		logger.logError(error, 'Error fetching nearby trees');

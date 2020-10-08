@@ -2,24 +2,22 @@ import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useTheme } from 'react-native-paper';
 
 import ScreenTwo from '../screens/Sample/ScreenTwo';
 import UserProfileScreen from '../screens/UserProfile/UserProfileScreen';
-import AppIntro from '../screens/AppIntro/AppIntro';
 import AddScreen from '../screens/Add/AddScreen';
+import WateringScreen from '../screens/Watering/WateringScreen';
+import * as colors from '../../theme/colors';
 
 const HomeTab = createMaterialBottomTabNavigator();
 
 const HomeTabNavigator = () => {
-	const { colors } = useTheme();
-
 	return (
 		<HomeTab.Navigator
 			labeled={true}
 			shifting={false}
-			activeColor={colors.primary}
-			barStyle={{ height: 56, backgroundColor: colors.surface }}
+			activeColor={colors.theme.primary}
+			barStyle={{ height: 56, backgroundColor: colors.theme.surface }}
 		>
 			<HomeTab.Screen
 				name="Add"
@@ -33,9 +31,9 @@ const HomeTabNavigator = () => {
 			/>
 			<HomeTab.Screen
 				name="Watering"
-				component={AppIntro}
+				component={WateringScreen}
 				options={{
-					tabBarLabel: 'Water',
+					tabBarLabel: 'Watering',
 					tabBarIcon: ({ color }) => (
 						<MaterialCommunityIcons name="opacity" color={color} size={26} />
 					),
@@ -45,7 +43,7 @@ const HomeTabNavigator = () => {
 				name="Feeds"
 				component={ScreenTwo}
 				options={{
-					tabBarLabel: 'Feed',
+					tabBarLabel: 'Feeds',
 					tabBarIcon: ({ color }) => (
 						<MaterialCommunityIcons name="text-box-outline" color={color} size={26} />
 					),

@@ -1,12 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { Button, Avatar, Title, Subheading, IconButton } from 'react-native-paper';
+import { Avatar, Title, Subheading, IconButton } from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 import logger from '../../utils/logger';
-import { BorderView } from '../../shared';
+import { BorderView, TabView } from '../../shared';
+import MyActivities from './MyActivities/MyActivities';
+import MyStatistics from './MyStatistics/MyStatistics';
+import MyGroups from './MyGroups/MyGroups';
 import styles from './UserProfileScreen.style';
 
 const UserProfileScreen = () => {
+	const userProfileTabConfig = [
+		{ key: 'myActivities', title: 'My Activities', component: MyActivities },
+		{ key: 'myStats', title: 'My Statistics', component: MyStatistics },
+		{ key: 'myGroup', title: 'My Group', component: MyGroups },
+	];
+
 	const onLogoutClick = async () => {
 		try {
 			await auth().signOut();
@@ -20,7 +29,7 @@ const UserProfileScreen = () => {
 	}, []);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.container}>
 			<BorderView show={false} style={styles.profileInfoContainer}>
 				<View style={{ flexDirection: 'row' }}>
 					<Avatar.Image size={64} source={{ uri: currentUser.photoURL }} />
@@ -33,6 +42,9 @@ const UserProfileScreen = () => {
 					<IconButton icon="logout-variant" onPress={onLogoutClick} />
 				</View>
 			</BorderView>
+			<View style={{ flex: 1 }}>
+				<TabView tabConfig={userProfileTabConfig} />
+			</View>
 		</View>
 	);
 };

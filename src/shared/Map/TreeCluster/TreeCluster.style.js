@@ -14,6 +14,10 @@ export default StyleSheet.create({
 		width: treeClusterMarkerCircleRadius,
 		height: treeClusterMarkerCircleRadius,
 	},
+	selectedIcon: {
+		alignSelf: 'center',
+	},
+	selectedMarkerCircle: { backgroundColor: colors.darkGreen },
 	treeClusterNumber: {
 		fontSize: variables.font.base,
 		color: colors.white,
@@ -36,4 +40,5 @@ export default StyleSheet.create({
 		borderBottomColor: 'transparent',
 		borderLeftColor: 'transparent',
 	},
+	selectedMarkerPin: { borderTopColor: colors.darkGreen },
 });

@@ -3,9 +3,11 @@ import Color from 'color';
 export const white = '#FFFFFF';
 export const black = '#000000';
 export const blue = '#1C53A9';
+export const lightGray = '#E6E6E6';
 export const gray = '#8B8B8B';
 export const darkGray = '#4E4E4E';
 export const green = '#34A5AC';
+export const darkGreen = '#226d71';
 export const yellow = '#E39B13';
 export const red = '#E32B13';
 
@@ -16,6 +18,7 @@ export const headingText = black;
 export const sectionHeadingText = gray;
 export const secondaryText = darkGray;
 export const success = green;
+export const warning = yellow;
 export const error = red;
 
 export const theme = {

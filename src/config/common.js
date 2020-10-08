@@ -3,6 +3,7 @@ import { API_BASE_URL } from '@env';
 export default {
 	api: {
 		base: API_BASE_URL,
+		version: 'v1',
 	},
 	roles: {
 		MODERATOR: 'moderator',

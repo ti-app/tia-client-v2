@@ -1,19 +1,16 @@
 import { StyleSheet } from 'react-native';
-import variables from '../../../theme/variables';
 import * as colors from '../../../theme/colors';
+import variables from '../../../theme/variables';
 
 export default StyleSheet.create({
-	container: {
-		flex: 1,
-	},
-	addSheetHandle: {
+	sheetHandle: {
 		width: 24,
 		height: 4,
 		backgroundColor: colors.gray,
 		borderRadius: 4,
 		alignSelf: 'center',
 	},
-	addSheetHandleContainer: {
+	sheetHandleContainer: {
 		padding: variables.space.base,
 		backgroundColor: colors.theme.background,
 		height: '100%',

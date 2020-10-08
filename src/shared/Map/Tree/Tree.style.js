@@ -12,6 +12,10 @@ export default StyleSheet.create({
 		width: treeMarkerCircleRadius,
 		height: treeMarkerCircleRadius,
 	},
+	selectedMarkerCircle: { backgroundColor: '#226d71' },
+	selectedIcon: {
+		alignSelf: 'center',
+	},
 	treeMarkerBottomPin: {
 		width: 0,
 		height: 0,
@@ -29,4 +33,5 @@ export default StyleSheet.create({
 		borderBottomColor: 'transparent',
 		borderLeftColor: 'transparent',
 	},
+	selectedMarkerPin: { borderTopColor: '#226d71' },
 });

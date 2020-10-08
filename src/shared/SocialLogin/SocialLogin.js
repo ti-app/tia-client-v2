@@ -10,8 +10,6 @@ import { GOOGLE_WEB_CLIENT_ID } from '@env';
 import styles from './SocialLogin.style';
 import logger from '../../utils/logger';
 
-console.log(GOOGLE_WEB_CLIENT_ID);
-
 GoogleSignin.configure({
 	webClientId: GOOGLE_WEB_CLIENT_ID,
 });

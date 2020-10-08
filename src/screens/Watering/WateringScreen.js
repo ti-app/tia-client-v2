@@ -1,10 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View } from 'react-native';
-
+import { Button, Text, TouchableRipple } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MapView from '../../shared/Map/MapView/MapView';
-import AddPanel from './AddPanel';
 
-import styles from './AddScreen.style';
+import styles from './WateringScreen.style';
+import * as colors from '../../../theme/colors';
+import variables from '../../../theme/variables';
 import { goToMapLocation } from '../../utils/geo';
 import { usePrevious, useKeyboardHideHook } from '../../utils/customHooks';
 
@@ -15,10 +17,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectTreeGroups } from '../../store/reducers/tree.reducer';
 import Topbar from '../../shared/Topbar/Topbar';
 import TreeMarkers from '../../shared/Map/TreeMarkers/TreeMarkers';
+import NearbyTreesPanel from './NearbyTreesPanel';
 import CustomBottomSheet from '../../shared/CustomBottomSheet/CustomBottomSheet';
 
-const AddScreen = () => {
+const WateringScreen = () => {
 	const [mapRef, setMapRef] = useState(null);
+	const [selectedTreeGroups, setSelectedTreeGroups] = useState({});
+	const [selectedTreesCount, setSelectedTreesCount] = useState(0);
 	const mapCenter = useSelector(selectMainMapCenter);
 	const userLocation = useSelector(selectUserLocation);
 	const treeGroups = useSelector(selectTreeGroups);
@@ -91,6 +96,29 @@ const AddScreen = () => {
 		setMainMapCenter(location);
 	};
 
+	const handleTreeGroupsSelect = (groupId, treeCount) => {
+		let modifiedState = selectedTreeGroups;
+		let newTreeCount = selectedTreesCount;
+		if (selectedTreeGroups[groupId]) {
+			delete modifiedState[groupId];
+			newTreeCount = newTreeCount - treeCount;
+		} else {
+			modifiedState = { ...selectedTreeGroups, [groupId]: treeCount };
+			newTreeCount = newTreeCount + treeCount;
+		}
+		setSelectedTreeGroups({ ...modifiedState });
+		setSelectedTreesCount(newTreeCount);
+	};
+
+	const handleMarkWatered = () => {
+		console.log('TODO: Mark watered for this trees', selectedTreeGroups);
+	};
+
+	const handleSelectedTreesClose = () => {
+		setSelectedTreeGroups({});
+		setSelectedTreesCount(0);
+	};
+
 	return (
 		<>
 			<View style={styles.container}>
@@ -107,17 +135,39 @@ const AddScreen = () => {
 					showsUserLocation
 					showsCompass={false}
 					showsMyLocationButton={false}
+					moveOnMarkerPress={false}
 					onRegionChangeComplete={handleOnRegionChange}
 				>
-					<TreeMarkers treeGroupData={treeGroups} />
+					<TreeMarkers
+						enableSelection
+						treeGroupData={treeGroups}
+						selectedTreeGroups={selectedTreeGroups}
+						onTreeGroupsSelect={handleTreeGroupsSelect}
+					/>
 				</MapView>
-				<Topbar onResultPress={onResultPress} />
+				{selectedTreesCount > 0 ? (
+					<View style={styles.selectedTreesTopbar}>
+						<TouchableRipple onPress={handleSelectedTreesClose}>
+							<MaterialCommunityIcons name="close" color={colors.tint} size={variables.font.xxl} />
+						</TouchableRipple>
+						<Text style={styles.selectedTreeTopbarLabel}>
+							{selectedTreesCount} {selectedTreesCount === 1 ? 'Tree' : 'Trees'} selected
+						</Text>
+						<Button uppercase={false} mode="contained" onPress={handleMarkWatered}>
+							Mark watered
+						</Button>
+					</View>
+				) : (
+					<Topbar onResultPress={onResultPress} />
+				)}
 			</View>
 			{!isKeyboardOpen && (
 				<CustomBottomSheet
+					snapPoints={[150, 60]}
+					initialSnap={0}
 					borderRadius={8}
-					renderContent={(sheetRef) => {
-						return <AddPanel onTabClick={() => sheetRef.current.snapTo(1)} />;
+					renderContent={() => {
+						return <NearbyTreesPanel />;
 					}}
 				/>
 			)}
@@ -125,4 +175,4 @@ const AddScreen = () => {
 	);
 };
 
-export default AddScreen;
+export default WateringScreen;
