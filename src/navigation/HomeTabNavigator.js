@@ -24,9 +24,7 @@ const HomeTabNavigator = () => {
 				component={AddScreen}
 				options={{
 					tabBarLabel: 'Add',
-					tabBarIcon: ({ color }) => (
-						<MaterialIcons name="add-photo-alternate" color={color} size={26} />
-					),
+					tabBarIcon: ({ color }) => <MaterialIcons name="add-photo-alternate" color={color} size={26} />,
 				}}
 			/>
 			<HomeTab.Screen
@@ -34,9 +32,7 @@ const HomeTabNavigator = () => {
 				component={WateringScreen}
 				options={{
 					tabBarLabel: 'Watering',
-					tabBarIcon: ({ color }) => (
-						<MaterialCommunityIcons name="opacity" color={color} size={26} />
-					),
+					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="opacity" color={color} size={26} />,
 				}}
 			/>
 			<HomeTab.Screen
@@ -44,9 +40,7 @@ const HomeTabNavigator = () => {
 				component={ScreenTwo}
 				options={{
 					tabBarLabel: 'Feeds',
-					tabBarIcon: ({ color }) => (
-						<MaterialCommunityIcons name="text-box-outline" color={color} size={26} />
-					),
+					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="text-box-outline" color={color} size={26} />,
 				}}
 			/>
 			<HomeTab.Screen
@@ -55,9 +49,7 @@ const HomeTabNavigator = () => {
 				options={{
 					headerShown: true,
 					tabBarLabel: 'Profile',
-					tabBarIcon: ({ color }) => (
-						<MaterialCommunityIcons name="account-box-outline" color={color} size={26} />
-					),
+					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-box-outline" color={color} size={26} />,
 				}}
 			/>
 			<HomeTab.Screen
@@ -65,9 +57,7 @@ const HomeTabNavigator = () => {
 				component={ScreenTwo}
 				options={{
 					tabBarLabel: 'Settings',
-					tabBarIcon: ({ color }) => (
-						<MaterialCommunityIcons name="cog-outline" color={color} size={26} />
-					),
+					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="cog-outline" color={color} size={26} />,
 				}}
 			/>
 		</HomeTab.Navigator>

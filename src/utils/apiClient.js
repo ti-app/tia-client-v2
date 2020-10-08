@@ -9,11 +9,7 @@ export default axiosInstance;
 
 const currentRequests = {};
 
-export const initializeAxiosInterceptors = (
-	accessToken,
-	requestInterceptorCB,
-	responseInterceptorCB
-) => {
+export const initializeAxiosInterceptors = (accessToken, requestInterceptorCB, responseInterceptorCB) => {
 	axiosInstance.interceptors.request.use(
 		(config) => {
 			const { headers, data, ...rest } = config;
