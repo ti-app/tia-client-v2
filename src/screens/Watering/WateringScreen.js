@@ -31,8 +31,6 @@ const WateringScreen = () => {
 
 	// const { showSnackbar, hideSnackbar } = useSnackbar();
 
-	const prevMapCenter = usePrevious(mapCenter);
-
 	const dispatch = useDispatch();
 	const fetchUserLocation = useCallback(() => dispatch(locationActions.fetchUserLocation()), [
 		dispatch,
@@ -41,8 +39,8 @@ const WateringScreen = () => {
 		(...param) => dispatch(locationActions.setMainMapCenter(...param)),
 		[dispatch]
 	);
-	const fetchTreeGroups = useCallback(
-		(...param) => dispatch(treeActions.fetchTreeGroups(...param)),
+	const waterMultipleTreeGroups = useCallback(
+		(...param) => dispatch(treeActions.waterMultipleTreeGroups(...param)),
 		[dispatch]
 	);
 
@@ -62,30 +60,6 @@ const WateringScreen = () => {
 			setMainMapCenter(userLocation);
 		}
 	}, [userLocation, mapRef, setMainMapCenter]);
-
-	/**
-	 * When map center changes
-	 *  Fetch tree groups for map center
-	 */
-	useEffect(() => {
-		if (!mapCenter) {
-			return;
-		}
-
-		const { latitude: mapCenterLat, longitude: mapCenterLng } = mapCenter;
-
-		const mapCenterChanged = !prevMapCenter
-			? true
-			: prevMapCenter.latitude !== mapCenterLat || prevMapCenter.longitude !== mapCenterLng;
-
-		if (mapCenterChanged) {
-			fetchTreeGroups(mapCenter);
-			// showSnackbar('Fetching trees...', {
-			// 	action: { label: 'Dismiss', onPress: () => hideSnackbar() },
-			// });
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [mapCenter, fetchTreeGroups]);
 
 	const handleOnRegionChange = (_region) => {
 		setMainMapCenter(_region);
@@ -111,12 +85,29 @@ const WateringScreen = () => {
 	};
 
 	const handleMarkWatered = () => {
-		console.log('TODO: Mark watered for this trees', selectedTreeGroups);
+		const treeGroupsToWater = Object.keys(selectedTreeGroups).map((id) => ({ id }));
+		waterMultipleTreeGroups(treeGroupsToWater);
+		resetSelectedTreeGroups();
 	};
 
-	const handleSelectedTreesClose = () => {
+	const handleSelectedTreesClose = () => resetSelectedTreeGroups();
+
+	const resetSelectedTreeGroups = () => {
 		setSelectedTreeGroups({});
 		setSelectedTreesCount(0);
+	};
+
+	const getTreeCountByStatus = (status) => {
+		return treeGroups.reduce((sum, group) => {
+			const healthyTreesInGroup = group.trees.reduce((treeCount, tree) => {
+				if (tree.health === status) {
+					return treeCount + 1;
+				} else {
+					return treeCount;
+				}
+			}, 0);
+			return sum + healthyTreesInGroup;
+		}, 0);
 	};
 
 	return (
@@ -167,7 +158,13 @@ const WateringScreen = () => {
 					initialSnap={0}
 					borderRadius={8}
 					renderContent={() => {
-						return <NearbyTreesPanel />;
+						return (
+							<NearbyTreesPanel
+								healthy={getTreeCountByStatus('healthy')}
+								weak={getTreeCountByStatus('weak')}
+								almostDead={getTreeCountByStatus('almostDead')}
+							/>
+						);
 					}}
 				/>
 			)}

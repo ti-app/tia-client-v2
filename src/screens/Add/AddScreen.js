@@ -58,30 +58,6 @@ const AddScreen = () => {
 		}
 	}, [userLocation, mapRef, setMainMapCenter]);
 
-	/**
-	 * When map center changes
-	 *  Fetch tree groups for map center
-	 */
-	useEffect(() => {
-		if (!mapCenter) {
-			return;
-		}
-
-		const { latitude: mapCenterLat, longitude: mapCenterLng } = mapCenter;
-
-		const mapCenterChanged = !prevMapCenter
-			? true
-			: prevMapCenter.latitude !== mapCenterLat || prevMapCenter.longitude !== mapCenterLng;
-
-		if (mapCenterChanged) {
-			fetchTreeGroups(mapCenter);
-			// showSnackbar('Fetching trees...', {
-			// 	action: { label: 'Dismiss', onPress: () => hideSnackbar() },
-			// });
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [mapCenter, fetchTreeGroups]);
-
 	const handleOnRegionChange = (_region) => {
 		setMainMapCenter(_region);
 	};

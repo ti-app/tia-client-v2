@@ -52,8 +52,8 @@ const AppContent = () => {
 					}
 				}
 			};
-			const responseInterceptor = () => setLoading(false);
-			initializeAxiosInterceptors(accessToken, requestInterceptor, responseInterceptor);
+			const requestFinished = () => setLoading(false);
+			initializeAxiosInterceptors(accessToken, requestInterceptor, requestFinished);
 		},
 		[setLoading]
 	);

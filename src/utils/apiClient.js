@@ -9,14 +9,14 @@ export default axiosInstance;
 
 const currentRequests = {};
 
-export const initializeAxiosInterceptors = (accessToken, requestInterceptorCB, responseInterceptorCB) => {
+export const initializeAxiosInterceptors = (accessToken, requestInterceptorCB, requestFinished) => {
 	axiosInstance.interceptors.request.use(
 		(config) => {
-			const { headers, data, ...rest } = config;
+			const { headers, ...rest } = config;
 			requestInterceptorCB(config);
 
 			let cancelToken = null;
-			if (data && data.cancelPrevious) {
+			if (rest.data && rest.data.cancelPrevious) {
 				if (currentRequests[config.url]) {
 					const source = currentRequests[config.url];
 					delete currentRequests[config.url];
@@ -38,6 +38,7 @@ export const initializeAxiosInterceptors = (accessToken, requestInterceptorCB, r
 			};
 		},
 		(error) => {
+			requestFinished(error);
 			const { config } = error;
 
 			if (axios.isCancel(error)) {
@@ -53,7 +54,7 @@ export const initializeAxiosInterceptors = (accessToken, requestInterceptorCB, r
 	);
 	axiosInstance.interceptors.response.use(
 		(response) => {
-			responseInterceptorCB(response);
+			requestFinished(response);
 
 			if (currentRequests[response.request.responseURL]) {
 				delete currentRequests[response.request.responseURL];
@@ -62,8 +63,8 @@ export const initializeAxiosInterceptors = (accessToken, requestInterceptorCB, r
 			return response;
 		},
 		(error) => {
+			requestFinished(error);
 			const { config } = error;
-
 			if (axios.isCancel(error)) {
 				return new Promise(() => {});
 			}
@@ -79,4 +80,21 @@ export const initializeAxiosInterceptors = (accessToken, requestInterceptorCB, r
 
 export const getUserActivity = (userId) => {
 	return axiosInstance.get(`user/${userId}/activity`);
+};
+
+export const getTreeGroups = ({ lat, lng, radius, health }) => {
+	return axiosInstance.get('tree_group', {
+		params: {
+			lat,
+			lng,
+			radius,
+			health,
+		},
+		data: { noloading: true, cancelPrevious: true },
+	});
+};
+
+export const updateWaterStatusForTreeGroups = (ids) => {
+	console.log({ treeGroups: ids });
+	return axiosInstance.patch('tree_group/water', { treeGroups: ids });
 };

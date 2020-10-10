@@ -18,6 +18,7 @@ export default StyleSheet.create({
 	},
 	treeCountItem: {
 		borderWidth: 1,
+		minWidth: 80,
 		borderColor: colors.lightGray,
 		borderRadius: 8,
 		padding: variables.space.small,

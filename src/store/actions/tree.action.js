@@ -1,4 +1,4 @@
-import apiClient from '../../utils/apiClient';
+import { updateWaterStatusForTreeGroups, getTreeGroups } from '../../utils/apiClient';
 import logger from '../../utils/logger';
 
 export const FETCH_TREE_GROUP_SUCCESS = 'FETCH_TREE_GROUP_SUCCESS';
@@ -7,43 +7,39 @@ export const dispatchFetchTreeGroupsAction = (dispatch, getState) => {
 	const state = getState();
 	const {
 		location: { mainMapCenter },
-		ui: { currentStatusList, currentRangeFilter },
 	} = state;
 
-	dispatch(
-		fetchTreeGroups(
-			{
-				...mainMapCenter,
-			},
-			currentRangeFilter * 1000,
-			currentStatusList.join(',')
-		)
-	);
+	dispatch(fetchTreeGroups(mainMapCenter));
 };
 
 export const fetchTreeGroups = (
 	location,
 	radius = 500,
 	health = 'healthy,adequate,average,weak,almostDead'
-) => async (dispatch, getState) => {
+) => async (dispatch) => {
 	try {
 		const { latitude: lat, longitude: lng } = location;
 
-		const response = await apiClient({
-			url: '/tree_group',
-			params: {
-				lat,
-				lng,
-				radius,
-				health,
-			},
-			headers: {
-				'content-type': 'application/json',
-			},
-			data: { noloading: true, cancelPrevious: true },
+		const response = await getTreeGroups({
+			lat,
+			lng,
+			radius,
+			health,
 		});
 
 		dispatch(fetchTreeGroupsSuccess(response.data));
+	} catch (error) {
+		logger.logError(error, 'Error fetching nearby trees');
+	}
+};
+
+export const waterMultipleTreeGroups = (ids) => async (dispatch, getState) => {
+	try {
+		const response = await updateWaterStatusForTreeGroups(ids);
+
+		console.log(response);
+
+		dispatchFetchTreeGroupsAction(dispatch, getState);
 	} catch (error) {
 		logger.logError(error, 'Error fetching nearby trees');
 	}

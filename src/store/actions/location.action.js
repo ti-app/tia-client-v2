@@ -3,6 +3,7 @@ import Geolocation from 'react-native-geolocation-service';
 
 import logger from '../../utils/logger';
 import { callGoogleAutoComplete } from '../../utils/google-api';
+import { fetchTreeGroups } from './tree.action';
 
 export const FETCH_USER_LOCATION_SUCCESS = 'FETCH_USER_LOCATION_SUCCESS';
 export const FETCH_SEARCHED_LOCATION_SUCCESS = 'FETCH_SEARCHED_LOCATION_SUCCESS';
@@ -70,7 +71,24 @@ export const fetchSearchedLocationSuccess = (data) => ({
 	payload: data,
 });
 
-export const setMainMapCenter = (data) => ({
-	type: SET_MAIN_MAP_CENTER,
-	payload: data,
-});
+export const setMainMapCenter = (mapCenter, shouldFetchTreeGroups = true) => (
+	dispatch,
+	getState
+) => {
+	const state = getState();
+	const { mainMapCenter: prevMainMapCenter } = state;
+
+	const mapCenterChanged = !prevMainMapCenter
+		? true
+		: prevMainMapCenter.latitude !== mapCenter.latitude ||
+		  prevMainMapCenter.longitude !== mapCenter.longitude;
+
+	dispatch({
+		type: SET_MAIN_MAP_CENTER,
+		payload: mapCenter,
+	});
+
+	if (mapCenterChanged && shouldFetchTreeGroups) {
+		dispatch(fetchTreeGroups(mapCenter));
+	}
+};
