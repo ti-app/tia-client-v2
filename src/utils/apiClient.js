@@ -95,6 +95,14 @@ export const getTreeGroups = ({ lat, lng, radius, health }) => {
 };
 
 export const updateWaterStatusForTreeGroups = (ids) => {
-	console.log({ treeGroups: ids });
 	return axiosInstance.patch('tree_group/water', { treeGroups: ids });
+};
+
+export const getTreeGroupClusters = ({ bbox }) => {
+	return axiosInstance.get('tree_group/cluster', {
+		params: {
+			bbox,
+		},
+		data: { noloading: true, cancelPrevious: true },
+	});
 };

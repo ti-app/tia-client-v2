@@ -12,7 +12,7 @@ import * as locationActions from '../../store/actions/location.action';
 import * as treeActions from '../../store/actions/tree.action';
 import { selectMainMapCenter, selectUserLocation } from '../../store/reducers/location.reducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectTreeGroups } from '../../store/reducers/tree.reducer';
+import { selectTreeGroups, selectTreeGroupsClusters } from '../../store/reducers/tree.reducer';
 import Topbar from '../../shared/Topbar/Topbar';
 import TreeMarkers from '../../shared/Map/TreeMarkers/TreeMarkers';
 import CustomBottomSheet from '../../shared/CustomBottomSheet/CustomBottomSheet';
@@ -22,6 +22,7 @@ const AddScreen = () => {
 	const mapCenter = useSelector(selectMainMapCenter);
 	const userLocation = useSelector(selectUserLocation);
 	const treeGroups = useSelector(selectTreeGroups);
+	const treeGroupClusters = useSelector(selectTreeGroupsClusters);
 	const [isKeyboardOpen] = useKeyboardHideHook();
 
 	// const { showSnackbar, hideSnackbar } = useSnackbar();
@@ -34,10 +35,6 @@ const AddScreen = () => {
 	]);
 	const setMainMapCenter = useCallback(
 		(...param) => dispatch(locationActions.setMainMapCenter(...param)),
-		[dispatch]
-	);
-	const fetchTreeGroups = useCallback(
-		(...param) => dispatch(treeActions.fetchTreeGroups(...param)),
 		[dispatch]
 	);
 
@@ -85,7 +82,14 @@ const AddScreen = () => {
 					showsMyLocationButton={false}
 					onRegionChangeComplete={handleOnRegionChange}
 				>
-					<TreeMarkers treeGroupData={treeGroups} />
+					{/* <TreeMarkers treeGroupData={treeGroups} /> */}
+					<TreeMarkers
+						treeGroupData={treeGroupClusters.map(({ lat, lng, count, _id }) => ({
+							location: { coordinates: [lng, lat] },
+							trees: { length: count + 1 },
+							_id,
+						}))}
+					/>
 				</MapView>
 				<Topbar onResultPress={onResultPress} />
 			</View>
