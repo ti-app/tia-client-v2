@@ -98,10 +98,11 @@ export const updateWaterStatusForTreeGroups = (ids) => {
 	return axiosInstance.patch('tree_group/water', { treeGroups: ids });
 };
 
-export const getTreeGroupClusters = ({ bbox }) => {
+export const getTreeGroupClusters = ({ bbox, zoom }) => {
 	return axiosInstance.get('tree_group/cluster', {
 		params: {
 			bbox,
+			zoom,
 		},
 		data: { noloading: true, cancelPrevious: true },
 	});

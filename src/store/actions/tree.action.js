@@ -4,6 +4,7 @@ import {
 	getTreeGroupClusters,
 } from '../../utils/apiClient';
 import logger from '../../utils/logger';
+import { Dimensions } from 'react-native';
 
 export const FETCH_TREE_GROUP_SUCCESS = 'FETCH_TREE_GROUP_SUCCESS';
 export const FETCH_TREE_GROUP_CLUSTER_SUCCESS = 'FETCH_TREE_GROUP_CLUSTER_SUCCESS';
@@ -51,8 +52,13 @@ export const fetchTreeGroupsClusters = (
 		const minLat = latitude - latitudeDelta / 2;
 		const maxLat = latitude + latitudeDelta / 2;
 
+		const screenWidth = Dimensions.get('window').width;
+
+		const zoomLevel = Math.ceil(Math.log2(360 * (screenWidth / 256 / longitudeDelta)) + 1);
+
 		const response = await getTreeGroupClusters({
 			bbox: `${minLng},${minLat},${maxLng},${maxLat}`,
+			zoom: zoomLevel,
 		});
 
 		dispatch(fetchTreeGroupsClustersSuccess(response.data));

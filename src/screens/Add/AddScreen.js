@@ -84,9 +84,9 @@ const AddScreen = () => {
 				>
 					{/* <TreeMarkers treeGroupData={treeGroups} /> */}
 					<TreeMarkers
-						treeGroupData={treeGroupClusters.map(({ lat, lng, count, _id }) => ({
+						treeGroupData={treeGroupClusters.map(({ lat, lng, count, _id, data }) => ({
 							location: { coordinates: [lng, lat] },
-							trees: { length: count + 1 },
+							trees: count === 1 ? [data] : { length: count },
 							_id,
 						}))}
 					/>

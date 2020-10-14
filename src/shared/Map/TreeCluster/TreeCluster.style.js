@@ -19,7 +19,8 @@ export default StyleSheet.create({
 	},
 	selectedMarkerCircle: { backgroundColor: colors.darkGreen },
 	treeClusterNumber: {
-		fontSize: variables.font.base,
+		fontSize: 8,
+		// fontSize: variables.font.base,
 		color: colors.white,
 		alignSelf: 'center',
 	},

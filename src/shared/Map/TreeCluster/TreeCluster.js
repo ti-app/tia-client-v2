@@ -15,7 +15,8 @@ const TreeCluster = ({ coordinate, onPress, treeCount, selected }) => {
 					style={[styles.treeClusterMarkerCircle, selected ? styles.selectedMarkerCircle : null]}
 				>
 					{!selected && (
-						<Text style={styles.treeClusterNumber}>{treeCount > 9 ? '9+' : treeCount}</Text>
+						<Text style={styles.treeClusterNumber}>{treeCount}</Text>
+						// <Text style={styles.treeClusterNumber}>{treeCount > 9 ? '9+' : treeCount}</Text>
 					)}
 					{selected && (
 						<MaterialCommunityIcons
