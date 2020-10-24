@@ -107,3 +107,11 @@ export const getTreeGroupClusters = ({ bbox, zoom }) => {
 		data: { noloading: true, cancelPrevious: true },
 	});
 };
+
+export const getTreeDetail = (treeId) => {
+	return axiosInstance.get(`/tree/${treeId}`);
+};
+
+export const getTreeActivity = (treeId) => {
+	return axiosInstance.get(`/tree/${treeId}/activity`);
+};

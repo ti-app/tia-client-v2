@@ -7,6 +7,7 @@ const TreeMarkers = ({
 	selectedTreeGroups,
 	enableSelection,
 	onTreeGroupsSelect,
+	onTreePress,
 }) => {
 	const handleSelect = (groupId, treeCount) => {
 		onTreeGroupsSelect(groupId, treeCount);
@@ -28,6 +29,8 @@ const TreeMarkers = ({
 					onPress={() => {
 						if (enableSelection) {
 							handleSelect(_id, trees.length);
+						} else {
+							onTreePress(_id);
 						}
 					}}
 				/>
