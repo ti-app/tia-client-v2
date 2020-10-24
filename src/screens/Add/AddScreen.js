@@ -17,7 +17,7 @@ import Topbar from '../../shared/Topbar/Topbar';
 import TreeMarkers from '../../shared/Map/TreeMarkers/TreeMarkers';
 import CustomBottomSheet from '../../shared/CustomBottomSheet/CustomBottomSheet';
 
-const AddScreen = () => {
+const AddScreen = ({ navigation }) => {
 	const [mapRef, setMapRef] = useState(null);
 	const mapCenter = useSelector(selectMainMapCenter);
 	const userLocation = useSelector(selectUserLocation);
@@ -85,7 +85,13 @@ const AddScreen = () => {
 					showsMyLocationButton={false}
 					onRegionChangeComplete={handleOnRegionChange}
 				>
-					<TreeMarkers treeGroupData={treeGroups} />
+					<TreeMarkers
+						treeGroupData={treeGroups}
+						onTreePress={(treeId) => {
+							// navigation.navigate('TreeDetail', { treeId });
+							console.log('AddScreen -> treeId', treeId);
+						}}
+					/>
 				</MapView>
 				<Topbar onResultPress={onResultPress} />
 			</View>

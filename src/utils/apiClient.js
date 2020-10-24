@@ -98,3 +98,11 @@ export const updateWaterStatusForTreeGroups = (ids) => {
 	console.log({ treeGroups: ids });
 	return axiosInstance.patch('tree_group/water', { treeGroups: ids });
 };
+
+export const getTreeDetail = (treeId) => {
+	return axiosInstance.get(`/tree/${treeId}`);
+};
+
+export const getTreeActivity = (treeId) => {
+	return axiosInstance.get(`/tree/${treeId}/activity`);
+};

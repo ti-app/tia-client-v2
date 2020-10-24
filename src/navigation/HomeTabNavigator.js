@@ -7,6 +7,7 @@ import ScreenTwo from '../screens/Sample/ScreenTwo';
 import UserProfileScreen from '../screens/UserProfile/UserProfileScreen';
 import AddScreen from '../screens/Add/AddScreen';
 import WateringScreen from '../screens/Watering/WateringScreen';
+import TreeDetailScreen from '../screens/TreeDetail/TreeDetail';
 import * as colors from '../../theme/colors';
 
 const HomeTab = createMaterialBottomTabNavigator();
@@ -24,7 +25,9 @@ const HomeTabNavigator = () => {
 				component={AddScreen}
 				options={{
 					tabBarLabel: 'Add',
-					tabBarIcon: ({ color }) => <MaterialIcons name="add-photo-alternate" color={color} size={26} />,
+					tabBarIcon: ({ color }) => (
+						<MaterialIcons name="add-photo-alternate" color={color} size={26} />
+					),
 				}}
 			/>
 			<HomeTab.Screen
@@ -32,7 +35,9 @@ const HomeTabNavigator = () => {
 				component={WateringScreen}
 				options={{
 					tabBarLabel: 'Watering',
-					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="opacity" color={color} size={26} />,
+					tabBarIcon: ({ color }) => (
+						<MaterialCommunityIcons name="opacity" color={color} size={26} />
+					),
 				}}
 			/>
 			<HomeTab.Screen
@@ -40,7 +45,9 @@ const HomeTabNavigator = () => {
 				component={ScreenTwo}
 				options={{
 					tabBarLabel: 'Feeds',
-					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="text-box-outline" color={color} size={26} />,
+					tabBarIcon: ({ color }) => (
+						<MaterialCommunityIcons name="text-box-outline" color={color} size={26} />
+					),
 				}}
 			/>
 			<HomeTab.Screen
@@ -49,15 +56,19 @@ const HomeTabNavigator = () => {
 				options={{
 					headerShown: true,
 					tabBarLabel: 'Profile',
-					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-box-outline" color={color} size={26} />,
+					tabBarIcon: ({ color }) => (
+						<MaterialCommunityIcons name="account-box-outline" color={color} size={26} />
+					),
 				}}
 			/>
 			<HomeTab.Screen
 				name="Settings"
-				component={ScreenTwo}
+				component={TreeDetailScreen}
 				options={{
 					tabBarLabel: 'Settings',
-					tabBarIcon: ({ color }) => <MaterialCommunityIcons name="cog-outline" color={color} size={26} />,
+					tabBarIcon: ({ color }) => (
+						<MaterialCommunityIcons name="cog-outline" color={color} size={26} />
+					),
 				}}
 			/>
 		</HomeTab.Navigator>

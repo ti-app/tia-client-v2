@@ -1,16 +1,11 @@
-import React, { useEffect, useCallback } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
+import React from 'react';
+import { View, Text, FlatList } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useDispatch, useSelector } from 'react-redux';
-import auth from '@react-native-firebase/auth';
 
-import { BorderView, CenterView, ActivityList } from '../../../shared';
-import { selectUserActivity } from '../../../store/reducers/userActivity.reducer';
-import * as userActivityActions from '../../../store/actions/userActivity.action';
-import { formatISOTimeStamp } from '../../../utils/date-time';
-import * as colors from '../../../../theme/colors';
-import { activityListItemStyles, myActivityStyles } from './MyActivities.style';
+import CenterView from '../Views/CenterView';
+import { formatISOTimeStamp } from '../../utils/date-time';
+import * as colors from '../.../../../../theme/colors';
+import { activityListItemStyles } from './ActivityList.style';
 
 const activityTypeMap = {
 	TREE_ADDED: {
@@ -88,35 +83,20 @@ const ActivityListItem = ({ item }) => {
 	);
 };
 
-const MyActivities = () => {
-	const dispatch = useDispatch();
-	const userActivity = useSelector(selectUserActivity);
-	const fetchUserActivity = useCallback(
-		(...param) => dispatch(userActivityActions.fetchUserActivity(...param)),
-		[dispatch]
-	);
-
-	useEffect(() => {
-		const userId = auth().currentUser.uid;
-		fetchUserActivity(userId);
-	}, [fetchUserActivity]);
-
+const ActivityList = ({ activities }) => {
 	return (
-		<View style={myActivityStyles.container}>
-			{/* <FlatList
-				data={userActivity}
-				keyExtractor={(item) => `${item.date}`}
-				contentContainerStyle={{ flexGrow: 1 }}
-				ListEmptyComponent={() => (
-					<CenterView>
-						<Text>No Activities</Text>
-					</CenterView>
-				)}
-				renderItem={({ item }) => <ActivityListItem item={item} />}
-			/> */}
-			<ActivityList activities={userActivity} />
-		</View>
+		<FlatList
+			data={activities}
+			keyExtractor={(item) => `${item.date}`}
+			contentContainerStyle={{ flexGrow: 1 }}
+			ListEmptyComponent={() => (
+				<CenterView>
+					<Text>No Activities</Text>
+				</CenterView>
+			)}
+			renderItem={({ item }) => <ActivityListItem item={item} />}
+		/>
 	);
 };
 
-export default MyActivities;
+export default ActivityList;
