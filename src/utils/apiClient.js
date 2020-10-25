@@ -108,6 +108,16 @@ export const getTreeGroupClusters = ({ bbox, zoom }) => {
 	});
 };
 
+export const getAggregatedTreeGroupData = ({ bbox, zoom }) => {
+	return axiosInstance.get('tree_group/aggregated', {
+		params: {
+			bbox,
+			zoom,
+		},
+		data: { noloading: true, cancelPrevious: true },
+	});
+};
+
 export const getTreeDetail = (treeId) => {
 	return axiosInstance.get(`/tree/${treeId}`);
 };

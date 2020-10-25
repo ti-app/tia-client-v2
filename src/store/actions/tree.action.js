@@ -2,12 +2,15 @@ import {
 	updateWaterStatusForTreeGroups,
 	getTreeGroups,
 	getTreeGroupClusters,
+	getAggregatedTreeGroupData,
 } from '../../utils/apiClient';
 import logger from '../../utils/logger';
 import { Dimensions } from 'react-native';
+import { getBboxFromLocation, getZoomLevelFromLocation } from '../../utils/geo';
 
 export const FETCH_TREE_GROUP_SUCCESS = 'FETCH_TREE_GROUP_SUCCESS';
 export const FETCH_TREE_GROUP_CLUSTER_SUCCESS = 'FETCH_TREE_GROUP_CLUSTER_SUCCESS';
+export const FETCH_TREE_GROUP_AGGREGATED_DATA_SUCCESS = 'FETCH_TREE_GROUP_AGGREGATED_DATA_SUCCESS';
 
 export const dispatchFetchTreeGroupsAction = (dispatch, getState) => {
 	const state = getState();
@@ -54,25 +57,31 @@ export const fetchTreeGroupsClusters = (
 	health = 'healthy,adequate,average,weak,almostDead'
 ) => async (dispatch) => {
 	try {
-		const { latitude, longitude, latitudeDelta, longitudeDelta } = location;
-
-		const minLng = longitude - longitudeDelta / 2;
-		const maxLng = longitude + longitudeDelta / 2;
-		const minLat = latitude - latitudeDelta / 2;
-		const maxLat = latitude + latitudeDelta / 2;
-
-		const screenWidth = Dimensions.get('window').width;
-
-		const zoomLevel = Math.ceil(Math.log2(360 * (screenWidth / 256 / longitudeDelta)) + 1);
-
 		const response = await getTreeGroupClusters({
-			bbox: `${minLng},${minLat},${maxLng},${maxLat}`,
-			zoom: zoomLevel,
+			bbox: getBboxFromLocation(location),
+			zoom: getZoomLevelFromLocation(location),
 		});
 
 		dispatch(fetchTreeGroupsClustersSuccess(response.data));
 	} catch (error) {
 		logger.logError(error, 'Error fetching nearby trees');
+	}
+};
+
+export const fetchTreeGroupAggregatedData = (
+	location,
+	radius = 500,
+	health = 'healthy,adequate,average,weak,almostDead'
+) => async (dispatch) => {
+	try {
+		const response = await getAggregatedTreeGroupData({
+			bbox: getBboxFromLocation(location),
+			zoom: getZoomLevelFromLocation(location),
+		});
+
+		dispatch(fetchTreeGroupAggregatedDataSuccess(response.data));
+	} catch (error) {
+		logger.logError(error, 'Error fetching aggregated tree group data');
 	}
 };
 
@@ -82,7 +91,7 @@ export const waterMultipleTreeGroups = (ids) => async (dispatch, getState) => {
 
 		dispatchFetchTreeClusterAction(dispatch, getState);
 	} catch (error) {
-		logger.logError(error, 'Error fetching nearby trees');
+		logger.logError(error, 'Error watering multiple tree groups');
 	}
 };
 
@@ -93,5 +102,10 @@ export const fetchTreeGroupsSuccess = (payload) => ({
 
 export const fetchTreeGroupsClustersSuccess = (payload) => ({
 	type: FETCH_TREE_GROUP_CLUSTER_SUCCESS,
+	payload,
+});
+
+export const fetchTreeGroupAggregatedDataSuccess = (payload) => ({
+	type: FETCH_TREE_GROUP_AGGREGATED_DATA_SUCCESS,
 	payload,
 });

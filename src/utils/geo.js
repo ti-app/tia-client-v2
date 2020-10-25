@@ -1,4 +1,5 @@
 import destination from '@turf/destination';
+import { Dimensions } from 'react-native';
 
 import config from '../config/common';
 import logger from './logger';
@@ -166,4 +167,25 @@ export const calculateTreeCoordinates = ({ spacing, type, numberOfPlants, endpoi
 
 		return [endpoints[0], ...modifiedTrees, endpoints[1]];
 	}
+};
+
+export const getBboxFromLocation = (_location) => {
+	const { latitude, longitude, latitudeDelta, longitudeDelta } = _location;
+
+	const minLng = longitude - longitudeDelta / 2;
+	const maxLng = longitude + longitudeDelta / 2;
+	const minLat = latitude - latitudeDelta / 2;
+	const maxLat = latitude + latitudeDelta / 2;
+
+	return `${minLng},${minLat},${maxLng},${maxLat}`;
+};
+
+export const getZoomLevelFromLocation = (_location) => {
+	const { longitudeDelta } = _location;
+
+	const screenWidth = Dimensions.get('window').width;
+
+	const zoomLevel = Math.ceil(Math.log2(360 * (screenWidth / 256 / longitudeDelta)) + 1);
+
+	return zoomLevel;
 };

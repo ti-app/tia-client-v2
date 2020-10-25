@@ -3,7 +3,11 @@ import Geolocation from 'react-native-geolocation-service';
 
 import logger from '../../utils/logger';
 import { callGoogleAutoComplete } from '../../utils/google-api';
-import { fetchTreeGroups, fetchTreeGroupsClusters } from './tree.action';
+import {
+	fetchTreeGroupAggregatedData,
+	fetchTreeGroups,
+	fetchTreeGroupsClusters,
+} from './tree.action';
 
 export const FETCH_USER_LOCATION_SUCCESS = 'FETCH_USER_LOCATION_SUCCESS';
 export const FETCH_SEARCHED_LOCATION_SUCCESS = 'FETCH_SEARCHED_LOCATION_SUCCESS';
@@ -71,10 +75,10 @@ export const fetchSearchedLocationSuccess = (data) => ({
 	payload: data,
 });
 
-export const setMainMapCenter = (mapCenter, { shouldFetchTreeClusters = true } = {}) => (
-	dispatch,
-	getState
-) => {
+export const setMainMapCenter = (
+	mapCenter,
+	{ shouldFetchTreeClusters = true, shouldFetchAggregatedTreeGroupData = false } = {}
+) => (dispatch, getState) => {
 	const state = getState();
 	const { mainMapCenter: prevMainMapCenter } = state;
 
@@ -88,7 +92,12 @@ export const setMainMapCenter = (mapCenter, { shouldFetchTreeClusters = true } =
 		payload: mapCenter,
 	});
 
-	if (mapCenterChanged && shouldFetchTreeClusters) {
-		dispatch(fetchTreeGroupsClusters(mapCenter));
+	if (mapCenterChanged) {
+		if (shouldFetchTreeClusters) {
+			dispatch(fetchTreeGroupsClusters(mapCenter));
+		}
+		if (shouldFetchAggregatedTreeGroupData) {
+			dispatch(fetchTreeGroupAggregatedData(mapCenter));
+		}
 	}
 };

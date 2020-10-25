@@ -20,7 +20,10 @@ import { useKeyboardHideHook, useSnackbar } from '../../utils/customHooks';
 import * as locationActions from '../../store/actions/location.action';
 import * as treeActions from '../../store/actions/tree.action';
 import { selectMainMapCenter, selectUserLocation } from '../../store/reducers/location.reducer';
-import { selectTreeGroupsClusters } from '../../store/reducers/tree.reducer';
+import {
+	selectNearbyTreesHealthStatus,
+	selectTreeGroupsClusters,
+} from '../../store/reducers/tree.reducer';
 import Topbar from '../../shared/Topbar/Topbar';
 import TreeMarkers from '../../shared/Map/TreeMarkers/TreeMarkers';
 import NearbyTreesPanel from './NearbyTreesPanel';
@@ -38,6 +41,7 @@ const WateringScreen = () => {
 	const mapCenter = useSelector(selectMainMapCenter);
 	const userLocation = useSelector(selectUserLocation);
 	const treeGroupClusters = useSelector(selectTreeGroupsClusters);
+	const nearbyTreesHealthStatus = useSelector(selectNearbyTreesHealthStatus);
 	const [isKeyboardOpen] = useKeyboardHideHook();
 
 	const { showSnackbar } = useSnackbar();
@@ -68,7 +72,14 @@ const WateringScreen = () => {
 	useEffect(() => {
 		if (userLocation && userLocation.latitude && userLocation.longitude) {
 			goToUserLocation();
-			setMainMapCenter(userLocation);
+			setMainMapCenter(
+				{
+					latitudeDelta: 0.011582007226706992,
+					longitudeDelta: 0.010652057826519012,
+					...userLocation,
+				},
+				{ shouldFetchTreeClusters: true, shouldFetchAggregatedTreeGroupData: true }
+			);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [userLocation, mapRef, setMainMapCenter]);
@@ -165,20 +176,6 @@ const WateringScreen = () => {
 		setSelectedTreesCount(0);
 	};
 
-	const getTreeCountByStatus = (status) => {
-		return 0;
-		return treeGroupClusters.reduce((sum, group) => {
-			const healthyTreesInGroup = group.trees.reduce((treeCount, tree) => {
-				if (tree.health === status) {
-					return treeCount + 1;
-				} else {
-					return treeCount;
-				}
-			}, 0);
-			return sum + healthyTreesInGroup;
-		}, 0);
-	};
-
 	return (
 		<>
 			<View style={styles.container}>
@@ -255,9 +252,9 @@ const WateringScreen = () => {
 					renderContent={() => {
 						return (
 							<NearbyTreesPanel
-								healthy={getTreeCountByStatus('healthy')}
-								weak={getTreeCountByStatus('weak')}
-								almostDead={getTreeCountByStatus('almostDead')}
+								healthy={nearbyTreesHealthStatus.healthy}
+								weak={nearbyTreesHealthStatus.weak}
+								almostDead={nearbyTreesHealthStatus.almostDead}
 							/>
 						);
 					}}
