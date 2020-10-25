@@ -12,7 +12,8 @@ const TreeMarkers = ({
 }) => {
 	return treeGroupClusterData.map((_treeCluster) => {
 		const {
-			count: treesInCluster,
+			treeGroupCount,
+			treeCount,
 			lat,
 			data: treeGroupData,
 			lng,
@@ -24,9 +25,8 @@ const TreeMarkers = ({
 			longitude: lng,
 		};
 
-		if (treeGroupData) {
+		if (treeGroupCount === 1 && treeGroupData) {
 			const {
-				count: treesInTreeGroup,
 				_id: treeGroupId,
 				location: treeGroupLocation,
 				health: treeGroupHealth,
@@ -41,12 +41,12 @@ const TreeMarkers = ({
 				<TreeGroup
 					key={treeGroupId}
 					coordinate={treeGroupCoords}
-					treeCount={treesInTreeGroup || 1} // FIXME: || 1 part is temporary to deal with missing field
+					treeCount={treeCount}
 					selected={enableSelection && selectedTreeGroups[treeGroupId] !== undefined}
 					health={treeGroupHealth}
 					onPress={() => {
 						if (enableSelection) {
-							onTreeGroupsSelect(treeGroupId, treesInTreeGroup || 1, treeGroupCoords); // FIXME: || 0 part is temporary to deal with missing field
+							onTreeGroupsSelect(treeGroupId, treeCount, treeGroupCoords);
 						} else {
 							onTreeGroupPress(treeGroupId);
 						}
@@ -60,7 +60,7 @@ const TreeMarkers = ({
 				id={treeClusterId}
 				key={treeClusterId}
 				coordinate={treeClusterCoords}
-				treeCount={treesInCluster || 0} // FIXME: || 0 part is temporary to deal with missing field
+				treeCount={treeCount}
 				onPress={() => onClusterPress(treeGroupClusterData)}
 			/>
 		);
