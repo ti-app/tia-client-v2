@@ -18,6 +18,15 @@ export const dispatchFetchTreeGroupsAction = (dispatch, getState) => {
 	dispatch(fetchTreeGroups(mainMapCenter));
 };
 
+export const dispatchFetchTreeClusterAction = (dispatch, getState) => {
+	const state = getState();
+	const {
+		location: { mainMapCenter },
+	} = state;
+
+	dispatch(fetchTreeGroupsClusters(mainMapCenter));
+};
+
 export const fetchTreeGroups = (
 	location,
 	radius = 500,
@@ -69,11 +78,9 @@ export const fetchTreeGroupsClusters = (
 
 export const waterMultipleTreeGroups = (ids) => async (dispatch, getState) => {
 	try {
-		const response = await updateWaterStatusForTreeGroups(ids);
+		await updateWaterStatusForTreeGroups(ids);
 
-		console.log(response);
-
-		dispatchFetchTreeGroupsAction(dispatch, getState);
+		dispatchFetchTreeClusterAction(dispatch, getState);
 	} catch (error) {
 		logger.logError(error, 'Error fetching nearby trees');
 	}

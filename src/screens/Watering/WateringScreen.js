@@ -1,35 +1,46 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Text, TouchableRipple } from 'react-native-paper';
+import Color from 'color';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MapView from '../../shared/Map/MapView/MapView';
 
 import styles from './WateringScreen.style';
 import * as colors from '../../../theme/colors';
 import variables from '../../../theme/variables';
-import { goToMapLocation } from '../../utils/geo';
-import { usePrevious, useKeyboardHideHook } from '../../utils/customHooks';
+import {
+	goToMapLocation,
+	getDistanceFromLatLon,
+	getLatLngDeltaForDistance,
+	isDistanceLessThan,
+} from '../../utils/geo';
+import { useKeyboardHideHook, useSnackbar } from '../../utils/customHooks';
 
 import * as locationActions from '../../store/actions/location.action';
 import * as treeActions from '../../store/actions/tree.action';
 import { selectMainMapCenter, selectUserLocation } from '../../store/reducers/location.reducer';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTreeGroups } from '../../store/reducers/tree.reducer';
+import { selectTreeGroupsClusters } from '../../store/reducers/tree.reducer';
 import Topbar from '../../shared/Topbar/Topbar';
 import TreeMarkers from '../../shared/Map/TreeMarkers/TreeMarkers';
 import NearbyTreesPanel from './NearbyTreesPanel';
 import CustomBottomSheet from '../../shared/CustomBottomSheet/CustomBottomSheet';
+import config from '../../config/common';
+import { Circle } from 'react-native-maps';
+
+const allowedMaxMapDistance = config.maxProximityDistance * 3;
 
 const WateringScreen = () => {
 	const [mapRef, setMapRef] = useState(null);
 	const [selectedTreeGroups, setSelectedTreeGroups] = useState({});
 	const [selectedTreesCount, setSelectedTreesCount] = useState(0);
+	const [showRangeCircle, setShowRangeCircle] = useState(false);
 	const mapCenter = useSelector(selectMainMapCenter);
 	const userLocation = useSelector(selectUserLocation);
-	const treeGroups = useSelector(selectTreeGroups);
+	const treeGroupClusters = useSelector(selectTreeGroupsClusters);
 	const [isKeyboardOpen] = useKeyboardHideHook();
 
-	// const { showSnackbar, hideSnackbar } = useSnackbar();
+	const { showSnackbar } = useSnackbar();
 
 	const dispatch = useDispatch();
 	const fetchUserLocation = useCallback(() => dispatch(locationActions.fetchUserLocation()), [
@@ -56,13 +67,61 @@ const WateringScreen = () => {
 	 */
 	useEffect(() => {
 		if (userLocation && userLocation.latitude && userLocation.longitude) {
-			goToMapLocation(mapRef, userLocation);
+			goToUserLocation();
 			setMainMapCenter(userLocation);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [userLocation, mapRef, setMainMapCenter]);
 
-	const handleOnRegionChange = (_region) => {
-		setMainMapCenter(_region);
+	const handleOnRegionChange = (region) => {
+		setMainMapCenter(region);
+		const {
+			latitude: currentCenterLat,
+			longitude: currentCenterLng,
+			latitudeDelta: currentCenterLatDelta,
+			longitudeDelta: currentCenterLngDelta,
+		} = region;
+
+		const topRightLat = currentCenterLat + currentCenterLatDelta;
+		const topRightLng = currentCenterLng + currentCenterLngDelta;
+		const bottomLeftLat = currentCenterLat - currentCenterLatDelta;
+		const bottomLeftLng = currentCenterLng - currentCenterLngDelta;
+
+		const distanceToTopRight = getDistanceFromLatLon([
+			userLocation,
+			{ latitude: topRightLat, longitude: topRightLng },
+		]);
+		const distanceToBottomLeft = getDistanceFromLatLon([
+			userLocation,
+			{ latitude: bottomLeftLat, longitude: bottomLeftLng },
+		]);
+		const distanceToCurrentCenter = getDistanceFromLatLon([
+			userLocation,
+			{ latitude: currentCenterLat, longitude: currentCenterLng },
+		]);
+
+		if (
+			distanceToCurrentCenter > allowedMaxMapDistance ||
+			distanceToTopRight > allowedMaxMapDistance ||
+			distanceToBottomLeft > allowedMaxMapDistance
+		) {
+			goToUserLocation();
+		}
+	};
+
+	const goToUserLocation = () => {
+		const { latitudeDelta: maxLatDelta, longitudeDelta: maxLngDelta } = getLatLngDeltaForDistance(
+			userLocation,
+			config.maxProximityDistance
+		);
+
+		const mapLocation = {
+			latitude: userLocation.latitude,
+			longitude: userLocation.longitude,
+			latitudeDelta: Math.abs(maxLatDelta),
+			longitudeDelta: Math.abs(maxLngDelta),
+		};
+		goToMapLocation(mapRef, mapLocation, 1000);
 	};
 
 	const onResultPress = (location) => {
@@ -70,7 +129,16 @@ const WateringScreen = () => {
 		setMainMapCenter(location);
 	};
 
-	const handleTreeGroupsSelect = (groupId, treeCount) => {
+	const handleTreeGroupsSelect = (groupId, treeCount, treeGroupLocation) => {
+		if (!isDistanceLessThan(userLocation, treeGroupLocation)) {
+			showSnackbar('You are more than 50 meters away from the tree.', { duration: 2000 });
+			setShowRangeCircle(true);
+			setTimeout(() => {
+				setShowRangeCircle(false);
+			}, 2000);
+			return;
+		}
+
 		let modifiedState = selectedTreeGroups;
 		let newTreeCount = selectedTreesCount;
 		if (selectedTreeGroups[groupId]) {
@@ -98,7 +166,8 @@ const WateringScreen = () => {
 	};
 
 	const getTreeCountByStatus = (status) => {
-		return treeGroups.reduce((sum, group) => {
+		return 0;
+		return treeGroupClusters.reduce((sum, group) => {
 			const healthyTreesInGroup = group.trees.reduce((treeCount, tree) => {
 				if (tree.health === status) {
 					return treeCount + 1;
@@ -129,11 +198,37 @@ const WateringScreen = () => {
 					moveOnMarkerPress={false}
 					onRegionChangeComplete={handleOnRegionChange}
 				>
+					{showRangeCircle && (
+						<Circle
+							center={{ latitude: userLocation.latitude, longitude: userLocation.longitude }}
+							radius={config.maxProximityDistance}
+							strokeWidth={0.5}
+							strokeColor={colors.blue}
+							fillColor={Color(colors.blue).alpha(0.1).toString()}
+						/>
+					)}
 					<TreeMarkers
 						enableSelection
-						treeGroupData={treeGroups}
 						selectedTreeGroups={selectedTreeGroups}
 						onTreeGroupsSelect={handleTreeGroupsSelect}
+						treeGroupClusterData={treeGroupClusters}
+						onTreePress={(treeId) => {
+							console.log('AddScreen -> treeId', treeId);
+						}}
+						onTreeGroupPress={(treeGroupId) => {
+							console.log('AddScreen -> treeGroupId', treeGroupId);
+						}}
+						onClusterPress={(_treeCluster) => {
+							const { lat, lng } = _treeCluster;
+
+							const location = {
+								latitude: lat,
+								longitude: lng,
+							};
+
+							goToMapLocation(mapRef, location);
+							setMainMapCenter(location);
+						}}
 					/>
 				</MapView>
 				{selectedTreesCount > 0 ? (

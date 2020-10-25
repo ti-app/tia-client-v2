@@ -71,7 +71,7 @@ export const fetchSearchedLocationSuccess = (data) => ({
 	payload: data,
 });
 
-export const setMainMapCenter = (mapCenter, shouldFetchTreeGroups = true) => (
+export const setMainMapCenter = (mapCenter, { shouldFetchTreeClusters = true } = {}) => (
 	dispatch,
 	getState
 ) => {
@@ -88,8 +88,7 @@ export const setMainMapCenter = (mapCenter, shouldFetchTreeGroups = true) => (
 		payload: mapCenter,
 	});
 
-	if (mapCenterChanged && shouldFetchTreeGroups) {
-		dispatch(fetchTreeGroups(mapCenter));
+	if (mapCenterChanged && shouldFetchTreeClusters) {
 		dispatch(fetchTreeGroupsClusters(mapCenter));
 	}
 };

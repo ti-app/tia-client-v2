@@ -6,28 +6,22 @@ import AddPanel from './AddPanel';
 
 import styles from './AddScreen.style';
 import { goToMapLocation } from '../../utils/geo';
-import { usePrevious, useKeyboardHideHook } from '../../utils/customHooks';
+import { useKeyboardHideHook } from '../../utils/customHooks';
 
 import * as locationActions from '../../store/actions/location.action';
-import * as treeActions from '../../store/actions/tree.action';
 import { selectMainMapCenter, selectUserLocation } from '../../store/reducers/location.reducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectTreeGroups, selectTreeGroupsClusters } from '../../store/reducers/tree.reducer';
+import { selectTreeGroupsClusters } from '../../store/reducers/tree.reducer';
 import Topbar from '../../shared/Topbar/Topbar';
 import TreeMarkers from '../../shared/Map/TreeMarkers/TreeMarkers';
 import CustomBottomSheet from '../../shared/CustomBottomSheet/CustomBottomSheet';
 
-const AddScreen = ({ navigation }) => {
+const AddScreen = () => {
 	const [mapRef, setMapRef] = useState(null);
 	const mapCenter = useSelector(selectMainMapCenter);
 	const userLocation = useSelector(selectUserLocation);
-	const treeGroups = useSelector(selectTreeGroups);
 	const treeGroupClusters = useSelector(selectTreeGroupsClusters);
 	const [isKeyboardOpen] = useKeyboardHideHook();
-
-	// const { showSnackbar, hideSnackbar } = useSnackbar();
-
-	const prevMapCenter = usePrevious(mapCenter);
 
 	const dispatch = useDispatch();
 	const fetchUserLocation = useCallback(() => dispatch(locationActions.fetchUserLocation()), [
@@ -51,7 +45,11 @@ const AddScreen = ({ navigation }) => {
 	useEffect(() => {
 		if (userLocation && userLocation.latitude && userLocation.longitude) {
 			goToMapLocation(mapRef, userLocation);
-			setMainMapCenter(userLocation);
+			setMainMapCenter({
+				latitudeDelta: 0.011582007226706992,
+				longitudeDelta: 0.010652057826519012,
+				...userLocation,
+			});
 		}
 	}, [userLocation, mapRef, setMainMapCenter]);
 
@@ -79,19 +77,27 @@ const AddScreen = ({ navigation }) => {
 					}}
 					showsUserLocation
 					showsCompass={false}
-					showsMyLocationButton={false}
+					showsMyLocationButton={true}
 					onRegionChangeComplete={handleOnRegionChange}
 				>
-					{/* <TreeMarkers treeGroupData={treeGroups} /> */}
 					<TreeMarkers
-						treeGroupData={treeGroupClusters.map(({ lat, lng, count, _id, data }) => ({
-							location: { coordinates: [lng, lat] },
-							trees: count === 1 ? [data] : { length: count },
-							_id,
-						}))}
+						treeGroupClusterData={treeGroupClusters}
 						onTreePress={(treeId) => {
-							// navigation.navigate('TreeDetail', { treeId });
 							console.log('AddScreen -> treeId', treeId);
+						}}
+						onTreeGroupPress={(treeGroupId) => {
+							console.log('AddScreen -> treeGroupId', treeGroupId);
+						}}
+						onClusterPress={(_treeCluster) => {
+							const { lat, lng } = _treeCluster;
+
+							const location = {
+								latitude: lat,
+								longitude: lng,
+							};
+
+							goToMapLocation(mapRef, location);
+							setMainMapCenter(location);
 						}}
 					/>
 				</MapView>

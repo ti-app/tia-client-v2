@@ -18,7 +18,7 @@ export const checkIfOutOfRange = (getState) => {
 	}
 };
 
-export const goToMapLocation = (mapRef, location) => {
+export const goToMapLocation = (mapRef, location, interval = 2000) => {
 	if (mapRef) {
 		const mapLocation = {
 			latitudeDelta: 0.011582007226706992,
@@ -26,7 +26,7 @@ export const goToMapLocation = (mapRef, location) => {
 			...location,
 		};
 
-		mapRef.animateToRegion(mapLocation, 2000);
+		mapRef.animateToRegion(mapLocation, interval);
 	}
 };
 

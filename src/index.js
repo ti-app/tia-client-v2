@@ -31,7 +31,6 @@ const AppContent = () => {
 		const showAppIntroVal = await AsyncStorage.getItem('SHOW_APP_INTRO');
 
 		if (!showAppIntroVal || showAppIntroVal !== 'false') {
-			// show app intro
 			setShowAppIntro(true);
 			AsyncStorage.setItem('SHOW_APP_INTRO', JSON.stringify(false));
 		}

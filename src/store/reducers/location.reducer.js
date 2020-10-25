@@ -30,9 +30,11 @@ const locationReducer = (state = initialState, action) => {
 		}
 
 		case SET_MAIN_MAP_CENTER: {
-			return { ...state, mainMapCenter: action.payload || initialCoords };
+			return {
+				...state,
+				mainMapCenter: { ...state.mainMapCenter, ...(action.payload || initialCoords) },
+			};
 		}
-
 		default: {
 			return state;
 		}
