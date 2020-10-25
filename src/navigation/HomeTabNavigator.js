@@ -21,22 +21,22 @@ const HomeTabNavigator = () => {
 			barStyle={{ height: 56, backgroundColor: colors.theme.surface }}
 		>
 			<HomeTab.Screen
-				name="Watering"
-				component={WateringScreen}
-				options={{
-					tabBarLabel: 'Watering',
-					tabBarIcon: ({ color }) => (
-						<MaterialCommunityIcons name="opacity" color={color} size={26} />
-					),
-				}}
-			/>
-			<HomeTab.Screen
 				name="Add"
 				component={AddScreen}
 				options={{
 					tabBarLabel: 'Add',
 					tabBarIcon: ({ color }) => (
 						<MaterialIcons name="add-photo-alternate" color={color} size={26} />
+					),
+				}}
+			/>
+			<HomeTab.Screen
+				name="Watering"
+				component={WateringScreen}
+				options={{
+					tabBarLabel: 'Watering',
+					tabBarIcon: ({ color }) => (
+						<MaterialCommunityIcons name="opacity" color={color} size={26} />
 					),
 				}}
 			/>
