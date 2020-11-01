@@ -27,4 +27,10 @@ export default StyleSheet.create({
 		fontSize: variables.font.xl,
 		fontWeight: 'bold',
 	},
+	myLocationButtonContainer: {
+		display: 'flex',
+		flexDirection: 'row-reverse',
+		paddingLeft: variables.space.base,
+		paddingBottom: variables.space.base,
+	},
 });

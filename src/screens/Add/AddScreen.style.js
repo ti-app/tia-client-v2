@@ -18,4 +18,10 @@ export default StyleSheet.create({
 		backgroundColor: colors.theme.background,
 		height: '100%',
 	},
+	myLocationButtonContainer: {
+		display: 'flex',
+		flexDirection: 'row-reverse',
+		paddingLeft: variables.space.base,
+		paddingBottom: variables.space.base,
+	},
 });

@@ -43,8 +43,7 @@ const CLUSTER_RADIUS_MAP = {
 };
 
 const TreeCluster = ({ id, coordinate, treeCount, onPress }) => {
-	const prefixLength = id.length;
-
+	const prefixLength = id.length || 8; // FIXME: find a better way to handle unexpected zero length geohash, 9 is the value of maximum geohash length set in backend
 	const zoom = ZOOM_PREFIX_MAP[prefixLength];
 	const radius = CLUSTER_RADIUS_MAP[zoom];
 	const treeCountFontSize = Math.max(variables.font.base, 3 * (23 - zoom));

@@ -8,6 +8,7 @@ const CustomBottomSheet = ({
 	renderContent,
 	snapPoints = [450, 300, 120, 80],
 	initialSnap = 2,
+	...props
 }) => {
 	const sheetRef = useRef();
 
@@ -27,6 +28,7 @@ const CustomBottomSheet = ({
 			initialSnap={initialSnap}
 			borderRadius={8}
 			renderContent={SheetComponent}
+			{...props}
 		/>
 	);
 };

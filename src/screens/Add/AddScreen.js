@@ -15,6 +15,7 @@ import { selectTreeGroupsClusters } from '../../store/reducers/tree.reducer';
 import Topbar from '../../shared/Topbar/Topbar';
 import TreeMarkers from '../../shared/Map/TreeMarkers/TreeMarkers';
 import CustomBottomSheet from '../../shared/CustomBottomSheet/CustomBottomSheet';
+import MyLocation from '../../shared/MyLocation/MyLocation';
 
 const AddScreen = () => {
 	const [mapRef, setMapRef] = useState(null);
@@ -106,8 +107,17 @@ const AddScreen = () => {
 			{!isKeyboardOpen && (
 				<CustomBottomSheet
 					borderRadius={8}
+					snapPoints={[490, 340, 160, 120]}
+					initialSnap={2}
 					renderContent={(sheetRef) => {
 						return <AddPanel onTabClick={() => sheetRef.current.snapTo(1)} />;
+					}}
+					renderHeader={() => {
+						return (
+							<View style={styles.myLocationButtonContainer}>
+								<MyLocation location={userLocation} mapRef={mapRef} />
+							</View>
+						);
 					}}
 				/>
 			)}

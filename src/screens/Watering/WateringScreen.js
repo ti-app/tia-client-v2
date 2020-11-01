@@ -30,6 +30,7 @@ import NearbyTreesPanel from './NearbyTreesPanel';
 import CustomBottomSheet from '../../shared/CustomBottomSheet/CustomBottomSheet';
 import config from '../../config/common';
 import { Circle } from 'react-native-maps';
+import MyLocation from '../../shared/MyLocation/MyLocation';
 
 const allowedMaxMapDistance = config.maxProximityDistance * 3;
 
@@ -85,7 +86,10 @@ const WateringScreen = () => {
 	}, [userLocation, mapRef, setMainMapCenter]);
 
 	const handleOnRegionChange = (region) => {
-		setMainMapCenter(region);
+		setMainMapCenter(region, {
+			shouldFetchTreeClusters: true,
+			shouldFetchAggregatedTreeGroupData: true,
+		});
 		const {
 			latitude: currentCenterLat,
 			longitude: currentCenterLng,
@@ -121,18 +125,21 @@ const WateringScreen = () => {
 	};
 
 	const goToUserLocation = () => {
+		goToMapLocation(mapRef, getUserRestrictedLocation(), 1000);
+	};
+
+	const getUserRestrictedLocation = () => {
 		const { latitudeDelta: maxLatDelta, longitudeDelta: maxLngDelta } = getLatLngDeltaForDistance(
 			userLocation,
 			config.maxProximityDistance
 		);
 
-		const mapLocation = {
+		return {
 			latitude: userLocation.latitude,
 			longitude: userLocation.longitude,
 			latitudeDelta: Math.abs(maxLatDelta),
 			longitudeDelta: Math.abs(maxLngDelta),
 		};
-		goToMapLocation(mapRef, mapLocation, 1000);
 	};
 
 	const onResultPress = (location) => {
@@ -246,7 +253,7 @@ const WateringScreen = () => {
 			</View>
 			{!isKeyboardOpen && (
 				<CustomBottomSheet
-					snapPoints={[150, 60]}
+					snapPoints={[200, 110]}
 					initialSnap={0}
 					borderRadius={8}
 					renderContent={() => {
@@ -256,6 +263,13 @@ const WateringScreen = () => {
 								weak={nearbyTreesHealthStatus.weak}
 								almostDead={nearbyTreesHealthStatus.almostDead}
 							/>
+						);
+					}}
+					renderHeader={() => {
+						return (
+							<View style={styles.myLocationButtonContainer}>
+								<MyLocation location={getUserRestrictedLocation()} mapRef={mapRef} />
+							</View>
 						);
 					}}
 				/>

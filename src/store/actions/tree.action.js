@@ -5,7 +5,6 @@ import {
 	getAggregatedTreeGroupData,
 } from '../../utils/apiClient';
 import logger from '../../utils/logger';
-import { Dimensions } from 'react-native';
 import { getBboxFromLocation, getZoomLevelFromLocation } from '../../utils/geo';
 
 export const FETCH_TREE_GROUP_SUCCESS = 'FETCH_TREE_GROUP_SUCCESS';
@@ -28,6 +27,15 @@ export const dispatchFetchTreeClusterAction = (dispatch, getState) => {
 	} = state;
 
 	dispatch(fetchTreeGroupsClusters(mainMapCenter));
+};
+
+export const dispatchFetchTreeGroupAggregatedAction = (dispatch, getState) => {
+	const state = getState();
+	const {
+		location: { mainMapCenter },
+	} = state;
+
+	dispatch(fetchTreeGroupAggregatedData(mainMapCenter));
 };
 
 export const fetchTreeGroups = (
@@ -90,6 +98,7 @@ export const waterMultipleTreeGroups = (ids) => async (dispatch, getState) => {
 		await updateWaterStatusForTreeGroups(ids);
 
 		dispatchFetchTreeClusterAction(dispatch, getState);
+		dispatchFetchTreeGroupAggregatedAction(dispatch, getState);
 	} catch (error) {
 		logger.logError(error, 'Error watering multiple tree groups');
 	}
